@@ -1,0 +1,289 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id                          String @id
+  firstName                   String
+  lastName                    String
+ 
+}
+
+model User{
+  id                          String @id
+  firstName                   String
+  lastName                    String
+
+  productReview               ProductReview[]
+  wishlist                    ProductWishlist[]
+  productLike                 ProductLike[]
+}
+
+enum ProductStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum DiscountType{
+  PERCENTAGE
+  FIXED
+}
+
+model Category {
+  id                          Int @id @default(autoincrement())
+  name                        String
+  link                        String
+  slug                        String
+  image                       String
+  createdAt                   DateTime @default(now())
+  
+  subcategory                 Subcategory[]
+  products                    Products[]
+
+}
+
+
+model Subcategory{
+  id                          Int @id @default(autoincrement())
+  name                        String
+  link                        String
+  slug                        String
+  categoryId                  Int
+  category                    Category @relation(fields: [categoryId], references: [id])
+
+  products                    Products[]
+
+}
+
+model Pages{
+  id                          Int @id @default(autoincrement())
+  name                        String
+  link                        String
+  slug                        String
+  createdAt                   DateTime @default(now())
+
+  subpage                     Subpage[]
+}
+
+model Subpage{
+  id                          Int @id @default(autoincrement())
+  name                        String
+  link                        String
+  slug                        String
+  createdAt                   DateTime @default(now())
+  pageId                      Int
+  page                        Pages @relation(fields: [pageId], references: [id])
+}
+
+model Products{
+  id                          Int @id @default(autoincrement())
+  name                        String
+  link                        String
+  slug                        String
+  createdAt                   DateTime @default(now())
+  description                 String
+  price                       Decimal?
+  sku                         String?
+  isAvailable                 Boolean @default(true)
+  status                      ProductStatus @default(DRAFT)
+
+//Relations
+  subcategoryId               Int
+  subcategory                 Subcategory @relation(fields: [subcategoryId], references: [id])
+  categoryId                  Int
+  category                    Category @relation(fields: [categoryId], references: [id])
+
+  brandId                     Int
+  brand                       Brand? @relation(fields: [brandId], references: [id])
+
+  variants                     ProductVariant[]
+  images                      ProductImage[]
+  reviews                     ProductReview[]
+  tags                        ProductTag[]
+  attributes                  ProductAttributeValue[]
+  relatedProducts             RelatedProduct[]
+  wishlist                    ProductWishlist[]
+  discounts                   Discount[]
+  likes                       ProductLike[]
+  @@index([name])
+  @@index([price])
+  @@index([status])
+}
+
+
+model Brand{
+  id                          Int @id @default(autoincrement())
+  name                        String
+  link                        String
+  slug                        String
+  logo                        String?
+  createdAt                   DateTime @default(now())
+  description                 String?
+
+  //relations
+
+  products    Products[]
+
+  @@index([name])
+}
+
+model ProductVariant{
+  id                          Int @id @default(autoincrement())
+  name                        String
+  link                        String
+  slug                        String
+  values                      String[]
+  stock                       Int
+  price                       Float
+  sku                         String
+  isAvailable                 Boolean @default(true)
+  status                      ProductStatus @default(DRAFT)
+
+
+
+  //relations
+
+  product                     Products @relation(fields: [productId], references: [id])
+  productId                   Int
+  attributes                  ProductAttributeValue[]
+
+  @@index([name])
+  @@index([price])
+
+  
+  
+  // products                    Products[]
+}
+
+model ProductImage{
+  id                          Int @id @default(autoincrement())
+  link                        String
+  slug                        String
+  altText                     String?
+  isPrimary                   Boolean
+
+  //relation
+
+  productId                   Int
+  product                     Products @relation(fields: [productId], references: [id])
+}
+
+model ProductReview{
+  id                          Int @id @default(autoincrement())
+  title                       String?
+  rating                      Int
+  comment                     String?
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+
+  //relations
+  userId                      String
+  user                        User @relation(fields: [userId], references: [id])                       
+  productId                   Int
+  product                     Products @relation(fields: [productId], references: [id])
+
+  @@index([rating])
+} 
+
+model ProductLike{
+  id                          Int @id @default(autoincrement())
+  createdAt                   DateTime @default(now())
+
+  //relations
+  productId                   Int
+  product                     Products @relation(fields: [productId], references: [id])
+  userId                      String
+  user                        User @relation(fields: [userId], references: [id])
+
+  @@index([userId, productId])
+}
+
+model ProductTag{
+  id                          Int @id @default(autoincrement())
+  name                         String @unique
+
+  //relations
+  productId                   Int
+  product                     Products @relation(fields: [productId], references: [id])
+
+  @@index([name])
+} 
+
+model ProductAttribute{
+  id                          Int @id @default(autoincrement())
+  name                        String
+  description                 String?
+
+  //relations
+  values                      ProductAttributeValue[]
+
+  @@index([name])
+
+
+}   
+
+
+model ProductAttributeValue{
+  id                          Int @unique
+  value                       String
+
+  //relations
+  attributeId                 Int
+  attribute                   ProductAttribute @relation(fields: [attributeId], references: [id])
+
+  productId                   Int
+  product                     Products @relation(fields: [productId], references: [id])
+  variantId            Int
+  variant              ProductVariant @relation(fields: [variantId], references: [id])
+}
+
+
+
+
+
+model RelatedProduct{
+  id                          Int @id @default(autoincrement())
+  link                        String
+  slug                        String
+  productId                   Int
+  product                     Products @relation(fields: [productId], references: [id])
+}   
+
+
+
+model ProductWishlist{
+  id                          Int @id @default(autoincrement())
+  createdAt                   DateTime @default(now())
+ 
+  //relation
+  productId                   Int
+  product                     Products @relation(fields: [productId], references: [id])
+  userId                      String
+  user                        User @relation(fields: [userId], references: [id])
+
+  @@index([userId, productId])
+}
+
+
+model Discount{
+  id                          Int @id @default(autoincrement())
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+  name                        String
+  description                 String?
+  type                        DiscountType
+  value                       Decimal
+  startDate                   DateTime
+  endDate                     DateTime
+  products                    Products[]
+  isActive                    Boolean
+
+  @@index([startDate])
+  @@index([endDate])
+}
