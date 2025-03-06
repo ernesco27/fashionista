@@ -2,7 +2,8 @@
 
 import { ClerkProvider } from "@clerk/nextjs";
 import React from "react";
-
+import FramerMotionProvider from "./FramerMotionProvider";
+import { ToastContainer } from "react-toastify";
 const Providers = ({ children }: { children: React.ReactNode }) => {
   return (
     <div>
@@ -11,7 +12,7 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
           layout: {
             socialButtonsPlacement: "bottom",
             socialButtonsVariant: "blockButton",
-            logoImageUrl: "/assets/logo.jpg",
+            logoImageUrl: "/assets/logo.png",
           },
         }}
         afterSignOutUrl="/sign-in"
@@ -21,7 +22,8 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
         signInFallbackRedirectUrl="/"
         signUpFallbackRedirectUrl="/"
       >
-        {children}
+        <ToastContainer position="top-right" theme="dark" />
+        <FramerMotionProvider>{children}</FramerMotionProvider>
       </ClerkProvider>
     </div>
   );
