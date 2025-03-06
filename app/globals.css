@@ -6,6 +6,13 @@
   font-family: Arial, Helvetica, sans-serif;
 } */
 
+/* html {
+  @apply text-slate-700 dark:text-slate-300;
+} */
+
+@layer utilities {
+}
+
 @layer base {
   i,
   svg,
@@ -41,4 +48,14 @@
   p {
     @apply text-p;
   }
+}
+
+:root {
+  --toastify-container-width: fit-content;
+  --toastify-toast-width: 320px;
+  --toastify-toast-offset: 16px;
+}
+
+.Toastify__toast {
+  font-size: 18px;
 }
