@@ -1,5 +1,4 @@
-import MobileButton from "@/components/modules/header/MobileButton";
-import Footer from "@/components/modules/Footer";
+import Footer from "@/components/modules/footer";
 import Header from "@/components/modules/header";
 import * as React from "react";
 
