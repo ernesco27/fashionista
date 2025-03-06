@@ -10,6 +10,8 @@ import MainMenu from "./MainMenu";
 
 const Main = () => {
   const [searchBarOpen, setSearchBarOpen] = useState(false);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
 
   return (
     <section className="h-full">
@@ -21,6 +23,10 @@ const Main = () => {
           <IconsGroup
             openSearchBar={searchBarOpen}
             setOpenSearchBar={setSearchBarOpen}
+            cartOpen={cartOpen}
+            setCartOpen={setCartOpen}
+            userOpen={userOpen}
+            setUserOpen={setUserOpen}
           />
         </Row>
       </Container>

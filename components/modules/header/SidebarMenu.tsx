@@ -89,7 +89,7 @@ const SidebarMenu = ({
                     >
                       <div className="flex items-center gap-4 w-full">
                         <span
-                          onClick={() => router.push(`/pages/${page.link}`)}
+                          onClick={() => router.push(`${page.link}`)}
                           className=""
                         >
                           {page.name}
@@ -119,7 +119,7 @@ const SidebarMenu = ({
               <ChevronLeft />
             </Button>
             <div className="flex flex-col gap-8 justify-center mt-12">
-              {subCategory.map((item: SubCategory, index: number) => (
+              {subCategory?.map((item: SubCategory, index: number) => (
                 <Link
                   className="Capitalize hover:text-primary-800"
                   href={`/categories/${item.link}/products`}

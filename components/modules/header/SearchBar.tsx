@@ -66,6 +66,7 @@ const SearchBar = ({
           <div className="flex overflow-y-auto w-full py-12 gap-12 flex-col justify-start h-[600px] px-8">
             {data?.map((product) => (
               <div
+                key={product.id}
                 className="group flex flex-col justify-start gap-8 px-8 items-center cursor-pointer lg:h-fit lg:flex-row lg:justify-between hover:border-gray-50 hover:scale-105 transition-all hover:shadow-lg py-4"
                 role="button"
                 onClick={() =>
