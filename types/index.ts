@@ -94,3 +94,25 @@ export type Product = {
   tags?: ProductTag[];
   attributes?: ProductAttribute[];
 };
+
+export type CartItem = {
+  id: number;
+  name: string;
+  price: number;
+  image: string;
+  quantity: number;
+  variant: ProductVariant[];
+};
+
+export type Slides = {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  link: string;
+  order: number;
+  slug: string;
+  btn: string;
+  textColor: string;
+  subTitle: string;
+};
