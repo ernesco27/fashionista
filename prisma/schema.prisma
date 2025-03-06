@@ -287,3 +287,22 @@ model Discount{
   @@index([startDate])
   @@index([endDate])
 }
+
+
+model Slide{
+  id                          Int @id @default(autoincrement())
+  name                        String
+  title                       String
+  description                 String?
+  subTitle                    String?
+  btn                         String
+  textColor                   String?
+  image                       String
+  link                        String?
+  order                       Int?
+  slug                        String
+  createdAt                   DateTime @default(now())
+  updatedAt                   DateTime @updatedAt
+
+
+}

@@ -3,6 +3,58 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+  //SLIDES
+  const slideData = [
+    {
+      title: "Summer Sale",
+      description: "Get ready for the hottest deals of the season!",
+      image: "womens-corset-top.png",
+      link: "categories/womens-fashion/products",
+      order: 1,
+      name: "banner home",
+      btn: "shop now",
+      slug: "banner-home",
+      subTitle: "UP TO 40% OFF",
+      textColor: "#ffffff",
+    },
+    {
+      title: "New Arrivals",
+      description: "Explore the latest fashion trends!",
+      image: "kente-dress.png",
+      link: "categories/womens-fashion/products",
+      order: 2,
+      name: "banner-home-2",
+      btn: "shop now",
+      slug: "banner-home",
+      subTitle: "Exclusive Classics",
+      textColor: "#ffffff",
+    },
+    {
+      title: "Men's Clothing",
+      description: "Discover our most popular products!",
+      image: "mens-kaftan.png",
+      link: "categories/men-clothing/products",
+      order: 3,
+      name: "banner-home-3",
+      btn: "shop now",
+      slug: "banner-home",
+    },
+    {
+      title: "Gift Ideas",
+      description: "Find the perfect present for your loved ones!",
+      image: "shopper.jpg",
+      link: "gift-ideas",
+      order: 4,
+      name: "banner-home-3",
+      btn: "shop now",
+      slug: "banner-home",
+    },
+  ];
+
+  await Promise.all(
+    slideData.map((slide) => prisma.slide.create({ data: slide })),
+  );
+
   // CATEGORY - Create categories and store their IDs
   const categories = await Promise.all(
     [
