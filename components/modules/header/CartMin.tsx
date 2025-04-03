@@ -2,7 +2,7 @@ import React from "react";
 import { AnimatePresence, m } from "framer-motion";
 import Image from "next/image";
 import { Trash } from "lucide-react";
-import { CartItem } from "@/types";
+
 import CurrencyFormat from "@/components/custom/CurrencyFormat";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
@@ -39,7 +39,7 @@ const CartMin = ({
             // scale: 0,
             transition: { ease: "easeIn", duration: 0.22 },
           }}
-          className="absolute top-[60px] right-20 h-fit w-[360px] p-4 shadow-2xl bg-white"
+          className="absolute top-[60px] right-20 h-fit w-[360px] p-4 shadow-2xl bg-white z-50"
         >
           <div className="flex flex-col justify-between gap-8">
             <span className="text-center">

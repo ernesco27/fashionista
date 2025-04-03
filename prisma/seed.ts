@@ -49,6 +49,52 @@ async function main() {
       btn: "shop now",
       slug: "banner-home",
     },
+    {
+      title: "Women's Fashion",
+      image: "peplum-blouse.png",
+      link: "categories/womens-fashion/products",
+      order: 5,
+      name: "top categories",
+      btn: "shop now",
+      slug: "top-categories-home",
+    },
+    {
+      title: "Men's Fashion",
+      image: "mens-embroidered-dashiki.png",
+      link: "categories/mens-fashion/products",
+      order: 6,
+      name: "top categories",
+      btn: "shop now",
+      slug: "top-categories-home",
+    },
+    {
+      title: "Kid's Fashion",
+      image: "kids.jpg",
+      link: "categories/kids-fashion/products",
+      order: 7,
+      name: "top categories",
+      btn: "shop now",
+      slug: "top-categories-home",
+    },
+    {
+      title: "big sale",
+      image: "cta-home.jpg",
+      link: "categories/big-sale/products",
+      order: 8,
+      name: "cta home",
+      btn: "shop now",
+      slug: "cta-home",
+    },
+    {
+      title: "deals of the month",
+      description: "Modern ankara corset top with traditional prints",
+      image: "womens-corset-top.png",
+      link: "/products/womens-ankara-corset-top",
+      order: 9,
+      name: "cta home",
+      btn: "shop now",
+      slug: "cta-home-2",
+    },
   ];
 
   await Promise.all(
@@ -365,6 +411,7 @@ async function main() {
       categoryId: categories[2].id,
       brandId: brand.id,
       isAvailable: true,
+      featured: false,
 
       images: {
         create: [
@@ -430,12 +477,14 @@ async function main() {
       description:
         "Modern ankara jumpsuit with bold prints, perfect for making a statement",
       price: 149.99,
+      salesPrice: 100.0,
       sku: "WAJ001-MAIN",
       status: "PUBLISHED",
       subcategoryId: getSubcategoryId("Jump Suits"),
       categoryId: categories[0].id,
       brandId: brand.id,
       isAvailable: true,
+      featured: true,
       images: {
         create: [
           {
@@ -459,6 +508,7 @@ async function main() {
             values: ["XS", "S", "M", "L"],
             stock: 60,
             price: 149.99,
+            salesPrice: 100.0,
             sku: "WAJ001-SIZE-001",
             isAvailable: true,
             link: "ankara-jumpsuit-size",
@@ -483,12 +533,14 @@ async function main() {
       description:
         "Elegant kente dress featuring traditional Ghanaian patterns, perfect for formal occasions",
       price: 199.99,
+      salesPrice: 149.99,
       sku: "WKD001-MAIN",
       status: "PUBLISHED",
       subcategoryId: getSubcategoryId("Straigt Dress"),
       categoryId: categories[0].id,
       brandId: brand.id,
       isAvailable: true,
+      featured: true,
       images: {
         create: [
           {
@@ -512,6 +564,7 @@ async function main() {
             values: ["S", "M", "L", "XL"],
             stock: 50,
             price: 199.99,
+            salesPrice: 149.99,
             sku: "WKD001-SIZE-001",
             isAvailable: true,
             link: "kente-dress-size",
@@ -538,12 +591,14 @@ async function main() {
       slug: "mens-embroidered-dashiki",
       description: "Hand-embroidered dashiki shirt with intricate patterns",
       price: 119.99,
+      salesPrice: 99.99,
       sku: "MED001-MAIN",
       status: "PUBLISHED",
       subcategoryId: getSubcategoryId("T-Shirt"),
       categoryId: categories[2].id,
       brandId: brand.id,
       isAvailable: true,
+      featured: true,
       images: {
         create: [
           {
@@ -577,6 +632,7 @@ async function main() {
             values: ["White", "Blue", "Gold"],
             stock: 80,
             price: 119.99,
+            salesPrice: 99.99,
             sku: "MED001-COLOR-001",
             isAvailable: true,
             link: "mens-dashiki-color",
@@ -603,12 +659,14 @@ async function main() {
       slug: "womens-ankara-corset",
       description: "Modern ankara corset top with traditional prints",
       price: 79.99,
+      salesPrice: 49.99,
       sku: "WAC001-MAIN",
       status: "PUBLISHED",
       subcategoryId: getSubcategoryId("Corset"),
       categoryId: categories[0].id,
       brandId: brand.id,
       isAvailable: true,
+      featured: true,
       images: {
         create: [
           {
@@ -632,6 +690,7 @@ async function main() {
             values: ["XS", "S", "M", "L"],
             stock: 45,
             price: 79.99,
+            salesPrice: 49.99,
             sku: "WAC001-SIZE-001",
             isAvailable: true,
             link: "womens-corset-size",
@@ -664,6 +723,7 @@ async function main() {
       categoryId: categories[2].id,
       brandId: brand.id,
       isAvailable: true,
+      featured: false,
       images: {
         create: [
           {
@@ -713,12 +773,14 @@ async function main() {
       slug: "womens-kente-straight-dress",
       description: "Sophisticated straight-cut dress with kente accents",
       price: 169.99,
+      salesPrice: 149.99,
       sku: "WKS001-MAIN",
       status: "PUBLISHED",
       subcategoryId: getSubcategoryId("Straigt Dress"),
       categoryId: categories[0].id,
       brandId: brand.id,
       isAvailable: true,
+      featured: true,
       images: {
         create: [
           {
@@ -742,6 +804,7 @@ async function main() {
             values: ["XS", "S", "M", "L", "XL"],
             stock: 55,
             price: 169.99,
+            salesPrice: 149.99,
             sku: "WKS001-SIZE-001",
             isAvailable: true,
             link: "kente-straight-dress-size",
@@ -768,12 +831,14 @@ async function main() {
       slug: "mens-kaftan-set",
       description: "Luxurious two-piece kaftan set with gold embroidery",
       price: 189.99,
+      salesPrice: 169.99,
       sku: "MKS002-MAIN",
       status: "PUBLISHED",
       subcategoryId: getSubcategoryId("T-Shirt"),
       categoryId: categories[2].id,
       brandId: brand.id,
       isAvailable: true,
+      featured: true,
       images: {
         create: [
           {
@@ -797,6 +862,7 @@ async function main() {
             values: ["M", "L", "XL", "XXL"],
             stock: 40,
             price: 189.99,
+            salesPrice: 169.99,
             sku: "MKS002-SIZE-001",
             isAvailable: true,
             link: "mens-kaftan-size",
@@ -823,12 +889,14 @@ async function main() {
       slug: "womens-ankara-peplum",
       description: "Stylish peplum blouse with vibrant ankara prints",
       price: 89.99,
+      salesPrice: 69.99,
       sku: "WAP001-MAIN",
       status: "PUBLISHED",
       subcategoryId: getSubcategoryId("Corset"),
       categoryId: categories[0].id,
       brandId: brand.id,
       isAvailable: true,
+      featured: true,
       images: {
         create: [
           {
@@ -852,6 +920,7 @@ async function main() {
             values: ["XS", "S", "M", "L"],
             stock: 65,
             price: 89.99,
+            salesPrice: 69.99,
             sku: "WAP001-SIZE-001",
             isAvailable: true,
             link: "peplum-blouse-size",

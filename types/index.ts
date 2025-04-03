@@ -77,12 +77,14 @@ export type Product = {
   slug: string;
   description: string;
   price: number;
+  salesPrice: number;
   sku: string;
   status: string;
   subcategoryId: number;
   categoryId: number;
   brandId: number;
   isAvailable: boolean;
+  featured: boolean;
   createdAt?: Date;
   updatedAt?: Date;
   relatedProducts?: RelatedProduct[];

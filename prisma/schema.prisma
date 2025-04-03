@@ -89,8 +89,10 @@ model Products{
   createdAt                   DateTime @default(now())
   description                 String
   price                       Decimal?
+  salesPrice                  Decimal?
   sku                         String?
   isAvailable                 Boolean @default(true)
+  featured                    Boolean @default(false)
   status                      ProductStatus @default(DRAFT)
 
 //Relations
@@ -102,7 +104,7 @@ model Products{
   brandId                     Int
   brand                       Brand? @relation(fields: [brandId], references: [id])
 
-  variants                     ProductVariant[]
+  variants                    ProductVariant[]
   images                      ProductImage[]
   reviews                     ProductReview[]
   tags                        ProductTag[]
@@ -141,6 +143,7 @@ model ProductVariant{
   values                      String[]
   stock                       Int
   price                       Float
+  salesPrice                  Float?
   sku                         String
   isAvailable                 Boolean @default(true)
   status                      ProductStatus @default(DRAFT)

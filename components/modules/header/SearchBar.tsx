@@ -1,14 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 
 import { SearchIcon, X } from "lucide-react";
@@ -32,7 +25,7 @@ const SearchBar = ({
   const [search, setSearch] = useState("");
 
   //get all products
-  const { data, error, isLoading, isValidating } = useSWR<Product[]>(
+  const { data, isLoading, isValidating } = useSWR<Product[]>(
     "/api/products?search=" + search,
     fetcher,
   );

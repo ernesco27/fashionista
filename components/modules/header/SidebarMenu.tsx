@@ -3,13 +3,9 @@
 import React, { useState } from "react";
 import {
   Sheet,
-  SheetClose,
   SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
+  SheetClose,
 } from "@/components/ui/sheet";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
@@ -32,12 +28,14 @@ const SidebarMenu = ({
 }) => {
   const [show, setShow] = useState(false);
   const [subCategory, setSubCategory] = useState<SubCategory[]>([]);
+  const [openMenu, setOpenMenu] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
 
   const router = useRouter();
 
   return (
     <>
-      <Sheet>
+      <Sheet open={open} onOpenChange={setOpen}>
         <SheetTrigger>
           <CiMenuFries size={34} />
         </SheetTrigger>
@@ -58,9 +56,10 @@ const SidebarMenu = ({
                       <div className="flex items-center gap-4">
                         <span
                           className="capitalize hover:text-primary-500 cursor-pointer"
-                          onClick={() =>
-                            router.push(`/categories/${item.link}/products`)
-                          }
+                          onClick={() => {
+                            router.push(`/categories/${item.link}/products`);
+                            setOpen(false);
+                          }}
                         >
                           {item.name}
                         </span>
@@ -89,7 +88,10 @@ const SidebarMenu = ({
                     >
                       <div className="flex items-center gap-4 w-full">
                         <span
-                          onClick={() => router.push(`${page.link}`)}
+                          onClick={() => {
+                            router.push(`${page.link}`);
+                            setOpen(false);
+                          }}
                           className=""
                         >
                           {page.name}

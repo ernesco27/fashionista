@@ -6,10 +6,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
-import useSWR from "swr";
-import { Slides } from "@/types";
-import { Button } from "@/components/ui/Button";
-import Link from "next/link";
+
 import "./style.css";
 import {
   Calendar,
@@ -49,7 +46,7 @@ const Payments = () => {
           spaceBetween={50}
           //slidesPerView={5}
           navigation={false}
-          pagination={true}
+          pagination={{ clickable: true }}
           modules={[Autoplay, Navigation, Pagination]}
           className="shadow-xl w-full flex items-center justify-center border border-gray-200 rounded-md px-20 py-10 "
         >

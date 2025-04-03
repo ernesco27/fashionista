@@ -4,7 +4,7 @@ import React from "react";
 
 const Logo = () => {
   return (
-    <Link href="/">
+    <Link href="/" className="flex items-center gap-2">
       <Image
         src="/assets/logo.png"
         alt="logo"
@@ -12,6 +12,7 @@ const Logo = () => {
         height={50}
         priority
       />
+      <p className="text-2xl font-semibold">Edimays Couture</p>
     </Link>
   );
 };

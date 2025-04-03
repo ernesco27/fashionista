@@ -1,7 +1,7 @@
 import React from "react";
 import Row from "./Row";
 import { CiSearch, CiShoppingCart, CiUser } from "react-icons/ci";
-import { Button } from "../ui/Button";
+
 import SearchBar from "../modules/header/SearchBar";
 import CartMin from "../modules/header/CartMin";
 import { useRouter } from "next/navigation";
@@ -11,8 +11,6 @@ const IconsGroup = ({
   setOpenSearchBar,
   cartOpen,
   setCartOpen,
-  userOpen,
-  setUserOpen,
 }: {
   openSearchBar: boolean;
   setOpenSearchBar: (open: boolean) => void;

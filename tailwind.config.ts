@@ -35,27 +35,18 @@ export default {
           "800": "#065186",
           "900": "#0c446e",
         },
-
-        //base colours
         black: "#1f1f1f",
         white: "#FFFFFF",
-
-        //base colour themes
         heading: "#1f1f1f",
         paragraph: "#4b5563",
         labels: "#1f1f1f",
         placeholder: "#9ca3af",
         table: colors.gray[900],
         backgroundDisable: "#F3F4F6",
-
         border: "#E5E7EB",
         "input-border": colors.gray[300],
         icon: colors.gray[500],
       },
-
-      //Typography
-      //fontFamily: {},
-
       fontSize: {
         sm: "0.8rem",
         base: "1rem",
@@ -64,8 +55,6 @@ export default {
         "3xl": "1.953rem",
         "4xl": "2.441rem",
         "5xl": "3.052rem",
-
-        //custom font size
         h1: [
           "4rem",
           {
@@ -90,7 +79,6 @@ export default {
             fontWeight: "700",
           },
         ],
-
         h4: [
           "2rem",
           {
@@ -140,7 +128,6 @@ export default {
           },
         ],
       },
-
       fontWeight: {
         thin: "100",
         hairline: "100",
@@ -154,56 +141,28 @@ export default {
         "extra-bold": "800",
         black: "900",
       },
-
-      //screen sizes min width
       screens: {
         xs: "360px",
         sm: "640px",
-        // => @media (min-width: 640px) { ... }
-
         md: "768px",
-        // => @media (min-width: 768px) { ... }
-
         lg: "1024px",
-        // => @media (min-width: 1024px) { ... }
-
         xl: "1280px",
-        // => @media (min-width: 1280px) { ... }
-
         "2xl": "1480px",
-        // => @media (min-width: 1480px) { ... }
         "3xl": "1680px",
-        // => @media (min-width: 1680px) { ... }
         "4xl": "1920px",
-        // => @media (min-width: 1920px) { ... }
       },
-
-      //screens max-width
-
       container: {
         center: true,
         screens: {
           xs: "360px",
           sm: "640px",
-          // => @media (max-width: 640px) { ... }
-
           md: "768px",
-          // => @media (max-width: 768px) { ... }
-
           lg: "1024px",
-          // => @media (max-width: 1024px) { ... }
-
           xl: "1280px",
-          // => @media (max-width: 1280px) { ... }
-
           "2xl": "1480px",
-          // => @media (max-width: 1480px) { ... }
           "3xl": "1680px",
-          // => @media (max-width: 1680px) { ... }
           "4xl": "1920px",
-          // => @media (max-width: 1920px) { ... }
         },
-
         padding: {
           DEFAULT: "0rem",
           xs: "0rem",
@@ -216,12 +175,28 @@ export default {
           "4xl": "2rem",
         },
       },
-
-      // borderRadius: {
-      //   lg: "var(--radius)",
-      //   md: "calc(var(--radius) - 2px)",
-      //   sm: "calc(var(--radius) - 4px)",
-      // },
+      keyframes: {
+        "accordion-down": {
+          from: {
+            height: "0",
+          },
+          to: {
+            height: "var(--radix-accordion-content-height)",
+          },
+        },
+        "accordion-up": {
+          from: {
+            height: "var(--radix-accordion-content-height)",
+          },
+          to: {
+            height: "0",
+          },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.2s ease-out",
+        "accordion-up": "accordion-up 0.2s ease-out",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

@@ -1,11 +1,12 @@
 import Categories from "@/components/modules/home/Categories";
 import CtaOne from "@/components/modules/home/CtaOne";
-import CtaTwo from "@/components/modules/home/CtaTwo";
+import Deals from "@/components/modules/home/Deals";
 import FeaturedProducts from "@/components/modules/home/FeaturedProducts";
 import HomeSlide from "@/components/modules/home/HomeSlide";
 import Payments from "@/components/custom/Payments";
 import { Metadata } from "next";
 import * as React from "react";
+import CollectionCta from "@/components/modules/home/CollectionCta";
 
 export default function Home() {
   return (
@@ -15,7 +16,8 @@ export default function Home() {
       <Categories />
       <FeaturedProducts />
       <CtaOne />
-      <CtaTwo />
+      <Deals />
+      <CollectionCta />
     </>
   );
 }

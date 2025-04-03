@@ -10,11 +10,13 @@ export async function GET() {
       slug: true,
       images: true,
       price: true,
+      salesPrice: true,
       status: true,
       createdAt: true,
       description: true,
       sku: true,
       isAvailable: true,
+      featured: true,
       subcategory: {
         select: {
           name: true,
@@ -34,6 +36,7 @@ export async function GET() {
         select: {
           name: true,
           price: true,
+          salesPrice: true,
         },
       },
       reviews: {
