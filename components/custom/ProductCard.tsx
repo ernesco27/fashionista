@@ -58,7 +58,7 @@ const ProductCard = ({ item }: { item: Product }) => {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => router.push(`/products${item.slug}`)}
+                onClick={() => router.push(`/products/${item.id}`)}
                 className="hover:bg-black hover:text-white"
               >
                 <Eye />
@@ -88,14 +88,19 @@ const ProductCard = ({ item }: { item: Product }) => {
         </m.div>
       </CardHeader>
       <CardContent>
-        <h5 className="capitalize">{item.name.substring(0, 20)}... </h5>
+        <h5
+          className="capitalize cursor-pointer"
+          onClick={() => router.push(`/products/${item.id}`)}
+        >
+          {item.name.substring(0, 20)}...{" "}
+        </h5>
 
         <div className="inline-flex justify-center gap-4 items-center">
           {item.salesPrice !== null ? (
             <div className="flex flex-wrap gap-20">
               <CurrencyFormat
                 value={item.salesPrice}
-                className="font-bold text-primary-900 text-left w-20 text-2xl "
+                className="font-bold text-primary-600 text-left w-20 text-2xl "
               />
               <CurrencyFormat
                 value={item.price}
@@ -105,7 +110,7 @@ const ProductCard = ({ item }: { item: Product }) => {
           ) : (
             <CurrencyFormat
               value={item.price}
-              className="font-bold text-primary-900 text-left w-20 text-2xl "
+              className="font-bold text-primary-600 text-left w-20 text-2xl "
             />
           )}
         </div>

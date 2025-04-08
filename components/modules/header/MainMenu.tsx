@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import useSWR from "swr";
 import { Page, Category, SubCategory } from "@/types";
 import { AnimatePresence, m } from "framer-motion";
 import { ChevronDown } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 const MainMenu = () => {
   const pathname = usePathname();
@@ -14,6 +15,8 @@ const MainMenu = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data: pageData } = useSWR<Page[]>("/api/pages", fetcher);
   const { data: categoryData } = useSWR<Category[]>("/api/categories", fetcher);
+
+  const router = useRouter();
 
   return (
     <section className="hidden lg:flex z-9 relative">
@@ -62,41 +65,55 @@ const MainMenu = () => {
                   filter: "blur(5px)",
                   transition: { ease: "easeIn", duration: 0.22 },
                 }}
-                className="grid grid-cols-4 justify-items-center grid-rows-auto absolute bg-white p-4 max-h-[560px] max-w-[999px] right-0 top-[54px] gap-12 shadow-xl z-50 "
+                className="z-50 h-[440px] bg-primary-500  w-[950px] absolute right-0 top-[54px] shadow-xl "
               >
-                {categoryData?.map((cat: Category) => {
-                  return (
-                    <ul key={cat.id} className="flex flex-col gap-4 text-xl">
-                      <li>
-                        <Link
-                          href={`/categories/${cat.link}/products`}
-                          className="font-bold group/item w-full transition-all flex items-center gap-2 duration-100 ease-linear hover:translate-x-1 capitalize"
-                        >
-                          <h5 className="transition ease-in-out hover:text-primary-500">
-                            {cat.name}
-                          </h5>
-                        </Link>
-                      </li>
+                <div className="grid grid-cols-4 justify-items-center grid-rows-auto max-h-[450px]  bg-white p-4  gap-8  overflow-hidden ">
+                  {categoryData?.map((cat: Category) => {
+                    return (
+                      <ul key={cat.id} className="flex flex-col gap-4 text-xl ">
+                        <li>
+                          <Link
+                            href={`/categories/${cat.link}/products`}
+                            className="font-bold group/item w-full transition-all flex items-center gap-2 duration-100 ease-linear hover:translate-x-1 capitalize"
+                          >
+                            <h5 className="transition ease-in-out hover:text-primary-800">
+                              {cat.name}
+                            </h5>
+                          </Link>
+                        </li>
 
-                      {cat.subcategory?.length > 0 &&
-                        cat.subcategory.map(
-                          (sub: SubCategory, index: number) => (
-                            <li
-                              key={index}
-                              className="font-normal duration-300 hover:translate-x-1 capitalize"
-                            >
-                              <Link
-                                className="hover:text-primary-500"
-                                href={`/categories/${sub.link}/products`}
+                        {cat.subcategory?.length > 0 &&
+                          cat.subcategory.map(
+                            (sub: SubCategory, index: number) => (
+                              <li
+                                key={index}
+                                className="font-normal duration-300 hover:translate-x-1 capitalize"
                               >
-                                {sub.name}
-                              </Link>
-                            </li>
-                          ),
-                        )}
-                    </ul>
-                  );
-                })}
+                                <Link
+                                  className="hover:text-primary-500"
+                                  href={`/categories/${sub.link}/products`}
+                                >
+                                  {sub.name}
+                                </Link>
+                              </li>
+                            ),
+                          )}
+                      </ul>
+                    );
+                  })}
+                  <div className="flex flex-col items-center gap-4 pt-8 w-[200px] h-[400px]   bg-[url('/assets/catmenu.jpg')] bg-center ">
+                    <p className="text-lg">-Latest Offers</p>
+                    <p>Upto 15% OFF</p>
+                    <Button
+                      variant="default"
+                      size="sm"
+                      className="text-lg"
+                      onClick={() => router.push("/products")}
+                    >
+                      Shop Now
+                    </Button>
+                  </div>
+                </div>
               </m.div>
             )}
           </AnimatePresence>

@@ -10,11 +10,13 @@ import {
 import Link from "next/link";
 import { Metadata } from "next";
 import Products from "@/components/modules/Products";
+import PageHeader from "@/components/custom/PageHeader";
 
 const page = () => {
   return (
     <>
       <section className="my-10">
+        <PageHeader heading="Store" link1="store" />
         <Container>
           <Row>
             <Breadcrumb>

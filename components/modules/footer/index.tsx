@@ -42,7 +42,7 @@ const index = () => {
 
   return (
     <m.footer
-      className="bg-black py-6"
+      className="bg-primary-950 py-6"
       initial={{
         opacity: 0,
         y: 100,

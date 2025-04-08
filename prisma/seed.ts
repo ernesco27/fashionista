@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, ProductStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -301,101 +301,178 @@ async function main() {
 
   // NOW create products
 
+  const mensKentePrintShirtData = {
+    name: "Men's Kente Print Shirt",
+    link: "kente-print-shirt",
+    slug: "kente-print-shirt",
+    description:
+      "Traditional Ghanaian kente-inspired print shirt in vibrant colors, perfect for special occasions",
+    price: 89.99,
+    sku: "MKS001-MAIN",
+    status: ProductStatus.PUBLISHED,
+    subcategoryId: getSubcategoryId("T-Shirt"),
+    categoryId: categories[2].id,
+    brandId: brand.id,
+    isAvailable: true,
+
+    // Add images
+    images: {
+      create: [
+        {
+          link: "kente-print-shirt.jpg",
+          slug: "kente-print-shirt",
+          altText: "Men's Kente Print Shirt - Front View",
+          isPrimary: true,
+        },
+        {
+          link: "kente-print-shirt-1.jpg",
+          slug: "kente-print-shirt-1",
+          altText: "Men's Kente Print Shirt - Back View",
+          isPrimary: false,
+        },
+      ],
+    },
+
+    // Add variants (without price/stock/sku)
+    variants: {
+      create: [
+        {
+          name: "Size",
+          link: "mens-kente-shirt-size",
+          slug: "mens-kente-shirt-size",
+        },
+        {
+          name: "Color",
+          link: "mens-kente-shirt-color",
+          slug: "mens-kente-shirt-color",
+        },
+      ],
+    },
+
+    // Connect tags
+    tags: {
+      create: [
+        { name: "Kente" },
+        { name: "Traditional" },
+        { name: "Formal Wear" },
+      ],
+    },
+
+    // Connect discounts
+    discounts: {
+      connect: [{ id: summerDiscount.id }],
+    },
+
+    // Add reviews (sample review)
+    reviews: {
+      create: [
+        {
+          rating: 5,
+          comment: "Excellent quality and perfect fit!",
+          userId: "user_2HNYXXXXXXXXXXX",
+        },
+      ],
+    },
+
+    likes: {
+      create: [
+        {
+          userId: "user_2HNYXXXXXXXXXXX",
+        },
+      ],
+    },
+  };
+
+  console.log(
+    "Creating mensKentePrintShirt with data:",
+    JSON.stringify(mensKentePrintShirtData, null, 2),
+  );
+
   const mensKentePrintShirt = await prisma.products.create({
-    data: {
-      name: "Men's Kente Print Shirt",
-      link: "kente-print-shirt",
-      slug: "kente-print-shirt",
-      description:
-        "Traditional Ghanaian kente-inspired print shirt in vibrant colors, perfect for special occasions",
-      price: 89.99,
-      sku: "MKS001-MAIN",
-      status: "PUBLISHED",
-      subcategoryId: getSubcategoryId("T-Shirt"),
-      categoryId: categories[2].id,
-      brandId: brand.id,
-      isAvailable: true,
+    data: mensKentePrintShirtData,
+  });
 
-      // Add images
-      images: {
-        create: [
-          {
-            link: "kente-print-shirt.jpg",
-            slug: "kente-print-shirt",
-            altText: "Men's Kente Print Shirt - Front View",
-            isPrimary: true,
-          },
-          {
-            link: "kente-print-shirt-1.jpg",
-            slug: "kente-print-shirt-1",
-            altText: "Men's Kente Print Shirt - Back View",
-            isPrimary: false,
-          },
-        ],
-      },
-
-      // Add variants
-      variants: {
-        create: [
-          {
-            name: "Size",
-            values: ["S", "M", "L", "XL"],
-            stock: 100,
-            price: 89.99,
-            sku: "MKS001-SIZE-001",
-            isAvailable: true,
-            status: "PUBLISHED",
-            link: "mens-kente-shirt-size",
-            slug: "mens-kente-shirt-size",
-          },
-          {
-            name: "Color",
-            values: ["Gold/Blue", "Green/Black", "Red/Yellow"],
-            stock: 100,
-            price: 89.99,
-            sku: "MKS001-COLOR-001",
-            isAvailable: true,
-            status: "PUBLISHED",
-            link: "mens-kente-shirt-color",
-            slug: "mens-kente-shirt-color",
-          },
-        ],
-      },
-
-      // Connect tags
-      tags: {
-        create: [
-          { name: "Kente" },
-          { name: "Traditional" },
-          { name: "Formal Wear" },
-        ],
-      },
-
-      // Connect discounts
-      discounts: {
-        connect: [{ id: summerDiscount.id }],
-      },
-
-      // Add reviews (sample review)
-      reviews: {
-        create: [
-          {
-            rating: 5,
-            comment: "Excellent quality and perfect fit!",
-            userId: "user_2HNYXXXXXXXXXXX", // Updated to use the UUID from first user
-          },
-        ],
-      },
-
-      likes: {
-        create: [
-          {
-            userId: "user_2HNYXXXXXXXXXXX", // Updated to use the UUID from first user
-          },
-        ],
-      },
+  // Create variant values for the first product's size variant with price/quantity/sku
+  const sizeVariant = await prisma.productVariant.findFirst({
+    where: {
+      name: "Size",
+      productId: mensKentePrintShirt.id,
     },
   });
+
+  if (sizeVariant) {
+    await prisma.productVariantValue.createMany({
+      data: [
+        {
+          value: "S",
+          variantId: sizeVariant.id,
+          price: 89.99,
+          quantity: 10,
+          sku: "MKS001-SIZE-S",
+        },
+        {
+          value: "M",
+          variantId: sizeVariant.id,
+          price: 95.0,
+          quantity: 20,
+          sku: "MKS001-SIZE-M",
+        },
+        {
+          value: "L",
+          variantId: sizeVariant.id,
+          price: 100.0,
+          quantity: 25,
+          sku: "MKS001-SIZE-L",
+        },
+        {
+          value: "XL",
+          variantId: sizeVariant.id,
+          price: 110.0,
+          quantity: 0,
+          sku: "MKS001-SIZE-XL",
+        },
+      ],
+    });
+  }
+
+  // Create variant values for the first product's color variant with price/quantity/sku
+  const colorVariant = await prisma.productVariant.findFirst({
+    where: {
+      name: "Color",
+      productId: mensKentePrintShirt.id,
+    },
+  });
+
+  if (colorVariant) {
+    await prisma.productVariantValue.createMany({
+      data: [
+        {
+          value: "Gold/Blue",
+          hexCode: "#FFD700",
+          variantId: colorVariant.id,
+          price: 89.99,
+          quantity: 25,
+          sku: "MKS001-COLOR-GDBL",
+        },
+        {
+          value: "Green/Black",
+          hexCode: "#006400",
+          variantId: colorVariant.id,
+          price: 89.99,
+          quantity: 25,
+          sku: "MKS001-COLOR-GRBL",
+        },
+        {
+          value: "Red/Yellow",
+          hexCode: "#FF0000",
+          variantId: colorVariant.id,
+          price: 89.99,
+          quantity: 25,
+          sku: "MKS001-COLOR-RDYL",
+        },
+      ],
+    });
+  }
 
   const fuguSmock = await prisma.products.create({
     data: {
@@ -434,21 +511,11 @@ async function main() {
         create: [
           {
             name: "Size",
-            values: ["M", "L", "XL", "XXL"],
-            stock: 75,
-            price: 129.99,
-            sku: "MFS002-SIZE-001",
-            isAvailable: true,
             link: "mens-fugu-smock-size",
             slug: "mens-fugu-smock-size",
           },
           {
             name: "Color",
-            values: ["Natural", "Black", "Brown"],
-            stock: 75,
-            price: 129.99,
-            sku: "MFS002-COLOR-001",
-            isAvailable: true,
             link: "mens-fugu-smock-color",
             slug: "mens-fugu-smock-color",
           },
@@ -468,6 +535,88 @@ async function main() {
       },
     },
   });
+
+  // Create variant values for the fuguSmock product's size variant
+  const fuguSmockSizeVariant = await prisma.productVariant.findFirst({
+    where: {
+      name: "Size",
+      productId: fuguSmock.id,
+    },
+  });
+
+  if (fuguSmockSizeVariant) {
+    await prisma.productVariantValue.createMany({
+      data: [
+        {
+          value: "S",
+          variantId: fuguSmockSizeVariant.id,
+          price: 129.99,
+          quantity: 25,
+          sku: "MFS002-SIZE-S",
+        },
+        {
+          value: "M",
+          variantId: fuguSmockSizeVariant.id,
+          price: 129.99,
+          quantity: 25,
+          sku: "MFS002-SIZE-M",
+        },
+        {
+          value: "L",
+          variantId: fuguSmockSizeVariant.id,
+          price: 129.99,
+          quantity: 25,
+          sku: "MFS002-SIZE-L",
+        },
+        {
+          value: "XL",
+          variantId: fuguSmockSizeVariant.id,
+          price: 129.99,
+          quantity: 25,
+          sku: "MFS002-SIZE-XL",
+        },
+      ],
+    });
+  }
+
+  // Create variant values for the fuguSmock product's color variant
+  const fuguSmockColorVariant = await prisma.productVariant.findFirst({
+    where: {
+      name: "Color",
+      productId: fuguSmock.id,
+    },
+  });
+
+  if (fuguSmockColorVariant) {
+    await prisma.productVariantValue.createMany({
+      data: [
+        {
+          value: "Natural",
+          hexCode: "#F5E6D3",
+          variantId: fuguSmockColorVariant.id,
+          price: 129.99,
+          quantity: 25,
+          sku: "MFS002-COLOR-NAT",
+        },
+        {
+          value: "Black",
+          hexCode: "#000000",
+          variantId: fuguSmockColorVariant.id,
+          price: 129.99,
+          quantity: 25,
+          sku: "MFS002-COLOR-BLK",
+        },
+        {
+          value: "Brown",
+          hexCode: "#8B4513",
+          variantId: fuguSmockColorVariant.id,
+          price: 129.99,
+          quantity: 25,
+          sku: "MFS002-COLOR-BRN",
+        },
+      ],
+    });
+  }
 
   const ankaraJumpsuit = await prisma.products.create({
     data: {
@@ -505,12 +654,6 @@ async function main() {
         create: [
           {
             name: "Size",
-            values: ["XS", "S", "M", "L"],
-            stock: 60,
-            price: 149.99,
-            salesPrice: 100.0,
-            sku: "WAJ001-SIZE-001",
-            isAvailable: true,
             link: "ankara-jumpsuit-size",
             slug: "ankara-jumpsuit-size",
           },
@@ -524,6 +667,49 @@ async function main() {
       },
     },
   });
+
+  // Create variant values for the ankaraJumpsuit product's size variant
+  const ankaraJumpsuitSizeVariant = await prisma.productVariant.findFirst({
+    where: {
+      name: "Size",
+      productId: ankaraJumpsuit.id,
+    },
+  });
+
+  if (ankaraJumpsuitSizeVariant) {
+    await prisma.productVariantValue.createMany({
+      data: [
+        {
+          value: "S",
+          variantId: ankaraJumpsuitSizeVariant.id,
+          price: 149.99,
+          quantity: 25,
+          sku: "WAJ001-SIZE-S",
+        },
+        {
+          value: "M",
+          variantId: ankaraJumpsuitSizeVariant.id,
+          price: 149.99,
+          quantity: 25,
+          sku: "WAJ001-SIZE-M",
+        },
+        {
+          value: "L",
+          variantId: ankaraJumpsuitSizeVariant.id,
+          price: 149.99,
+          quantity: 25,
+          sku: "WAJ001-SIZE-L",
+        },
+        {
+          value: "XL",
+          variantId: ankaraJumpsuitSizeVariant.id,
+          price: 149.99,
+          quantity: 25,
+          sku: "WAJ001-SIZE-XL",
+        },
+      ],
+    });
+  }
 
   const kenteDress = await prisma.products.create({
     data: {
@@ -561,12 +747,6 @@ async function main() {
         create: [
           {
             name: "Size",
-            values: ["S", "M", "L", "XL"],
-            stock: 50,
-            price: 199.99,
-            salesPrice: 149.99,
-            sku: "WKD001-SIZE-001",
-            isAvailable: true,
             link: "kente-dress-size",
             slug: "kente-dress-size",
           },
@@ -583,6 +763,49 @@ async function main() {
       },
     },
   });
+
+  // Create variant values for the kenteDress product's size variant
+  const kenteDressSizeVariant = await prisma.productVariant.findFirst({
+    where: {
+      name: "Size",
+      productId: kenteDress.id,
+    },
+  });
+
+  if (kenteDressSizeVariant) {
+    await prisma.productVariantValue.createMany({
+      data: [
+        {
+          value: "S",
+          variantId: kenteDressSizeVariant.id,
+          price: 199.99,
+          quantity: 25,
+          sku: "WKD001-SIZE-S",
+        },
+        {
+          value: "M",
+          variantId: kenteDressSizeVariant.id,
+          price: 199.99,
+          quantity: 25,
+          sku: "WKD001-SIZE-M",
+        },
+        {
+          value: "L",
+          variantId: kenteDressSizeVariant.id,
+          price: 199.99,
+          quantity: 25,
+          sku: "WKD001-SIZE-L",
+        },
+        {
+          value: "XL",
+          variantId: kenteDressSizeVariant.id,
+          price: 199.99,
+          quantity: 25,
+          sku: "WKD001-SIZE-XL",
+        },
+      ],
+    });
+  }
 
   const mensDashiki = await prisma.products.create({
     data: {
@@ -619,22 +842,11 @@ async function main() {
         create: [
           {
             name: "Size",
-            values: ["M", "L", "XL", "XXL"],
-            stock: 80,
-            price: 119.99,
-            sku: "MED001-SIZE-001",
-            isAvailable: true,
             link: "mens-dashiki-size",
             slug: "mens-dashiki-size",
           },
           {
             name: "Color",
-            values: ["White", "Blue", "Gold"],
-            stock: 80,
-            price: 119.99,
-            salesPrice: 99.99,
-            sku: "MED001-COLOR-001",
-            isAvailable: true,
             link: "mens-dashiki-color",
             slug: "mens-dashiki-color",
           },
@@ -651,6 +863,88 @@ async function main() {
       },
     },
   });
+
+  // Create variant values for the mensDashiki product's size variant
+  const mensDashikiSizeVariant = await prisma.productVariant.findFirst({
+    where: {
+      name: "Size",
+      productId: mensDashiki.id,
+    },
+  });
+
+  if (mensDashikiSizeVariant) {
+    await prisma.productVariantValue.createMany({
+      data: [
+        {
+          value: "S",
+          variantId: mensDashikiSizeVariant.id,
+          price: 119.99,
+          quantity: 25,
+          sku: "MED001-SIZE-S",
+        },
+        {
+          value: "M",
+          variantId: mensDashikiSizeVariant.id,
+          price: 119.99,
+          quantity: 25,
+          sku: "MED001-SIZE-M",
+        },
+        {
+          value: "L",
+          variantId: mensDashikiSizeVariant.id,
+          price: 119.99,
+          quantity: 25,
+          sku: "MED001-SIZE-L",
+        },
+        {
+          value: "XL",
+          variantId: mensDashikiSizeVariant.id,
+          price: 119.99,
+          quantity: 25,
+          sku: "MED001-SIZE-XL",
+        },
+      ],
+    });
+  }
+
+  // Create variant values for the mensDashiki product's color variant
+  const mensDashikiColorVariant = await prisma.productVariant.findFirst({
+    where: {
+      name: "Color",
+      productId: mensDashiki.id,
+    },
+  });
+
+  if (mensDashikiColorVariant) {
+    await prisma.productVariantValue.createMany({
+      data: [
+        {
+          value: "White",
+          hexCode: "#FFFFFF",
+          variantId: mensDashikiColorVariant.id,
+          price: 119.99,
+          quantity: 25,
+          sku: "MED001-COLOR-WHT",
+        },
+        {
+          value: "Blue",
+          hexCode: "#0000FF",
+          variantId: mensDashikiColorVariant.id,
+          price: 119.99,
+          quantity: 25,
+          sku: "MED001-COLOR-BLU",
+        },
+        {
+          value: "Gold",
+          hexCode: "#FFD700",
+          variantId: mensDashikiColorVariant.id,
+          price: 119.99,
+          quantity: 25,
+          sku: "MED001-COLOR-GLD",
+        },
+      ],
+    });
+  }
 
   const womensCorset = await prisma.products.create({
     data: {
@@ -687,12 +981,6 @@ async function main() {
         create: [
           {
             name: "Size",
-            values: ["XS", "S", "M", "L"],
-            stock: 45,
-            price: 79.99,
-            salesPrice: 49.99,
-            sku: "WAC001-SIZE-001",
-            isAvailable: true,
             link: "womens-corset-size",
             slug: "womens-corset-size",
           },
@@ -709,6 +997,49 @@ async function main() {
       },
     },
   });
+
+  // Create variant values for the womensCorset product's size variant
+  const womensCorsetSizeVariant = await prisma.productVariant.findFirst({
+    where: {
+      name: "Size",
+      productId: womensCorset.id,
+    },
+  });
+
+  if (womensCorsetSizeVariant) {
+    await prisma.productVariantValue.createMany({
+      data: [
+        {
+          value: "S",
+          variantId: womensCorsetSizeVariant.id,
+          price: 79.99,
+          quantity: 25,
+          sku: "WAC001-SIZE-S",
+        },
+        {
+          value: "M",
+          variantId: womensCorsetSizeVariant.id,
+          price: 79.99,
+          quantity: 25,
+          sku: "WAC001-SIZE-M",
+        },
+        {
+          value: "L",
+          variantId: womensCorsetSizeVariant.id,
+          price: 79.99,
+          quantity: 25,
+          sku: "WAC001-SIZE-L",
+        },
+        {
+          value: "XL",
+          variantId: womensCorsetSizeVariant.id,
+          price: 79.99,
+          quantity: 25,
+          sku: "WAC001-SIZE-XL",
+        },
+      ],
+    });
+  }
 
   const mensAnkaraSuit = await prisma.products.create({
     data: {
@@ -744,11 +1075,6 @@ async function main() {
         create: [
           {
             name: "Size",
-            values: ["38R", "40R", "42R", "44R"],
-            stock: 30,
-            price: 299.99,
-            sku: "MAS001-SIZE-001",
-            isAvailable: true,
             link: "mens-ankara-suit-size",
             slug: "mens-ankara-suit-size",
           },
@@ -765,6 +1091,49 @@ async function main() {
       },
     },
   });
+
+  // Create variant values for the mensAnkaraSuit product's size variant
+  const mensAnkaraSuitSizeVariant = await prisma.productVariant.findFirst({
+    where: {
+      name: "Size",
+      productId: mensAnkaraSuit.id,
+    },
+  });
+
+  if (mensAnkaraSuitSizeVariant) {
+    await prisma.productVariantValue.createMany({
+      data: [
+        {
+          value: "S",
+          variantId: mensAnkaraSuitSizeVariant.id,
+          price: 299.99,
+          quantity: 25,
+          sku: "MAS001-SIZE-S",
+        },
+        {
+          value: "M",
+          variantId: mensAnkaraSuitSizeVariant.id,
+          price: 299.99,
+          quantity: 25,
+          sku: "MAS001-SIZE-M",
+        },
+        {
+          value: "L",
+          variantId: mensAnkaraSuitSizeVariant.id,
+          price: 299.99,
+          quantity: 25,
+          sku: "MAS001-SIZE-L",
+        },
+        {
+          value: "XL",
+          variantId: mensAnkaraSuitSizeVariant.id,
+          price: 299.99,
+          quantity: 25,
+          sku: "MAS001-SIZE-XL",
+        },
+      ],
+    });
+  }
 
   const womensStraightDress = await prisma.products.create({
     data: {
@@ -801,12 +1170,6 @@ async function main() {
         create: [
           {
             name: "Size",
-            values: ["XS", "S", "M", "L", "XL"],
-            stock: 55,
-            price: 169.99,
-            salesPrice: 149.99,
-            sku: "WKS001-SIZE-001",
-            isAvailable: true,
             link: "kente-straight-dress-size",
             slug: "kente-straight-dress-size",
           },
@@ -823,6 +1186,49 @@ async function main() {
       },
     },
   });
+
+  // Create variant values for the womensStraightDress product's size variant
+  const womensStraightDressSizeVariant = await prisma.productVariant.findFirst({
+    where: {
+      name: "Size",
+      productId: womensStraightDress.id,
+    },
+  });
+
+  if (womensStraightDressSizeVariant) {
+    await prisma.productVariantValue.createMany({
+      data: [
+        {
+          value: "S",
+          variantId: womensStraightDressSizeVariant.id,
+          price: 169.99,
+          quantity: 25,
+          sku: "WKS001-SIZE-S",
+        },
+        {
+          value: "M",
+          variantId: womensStraightDressSizeVariant.id,
+          price: 169.99,
+          quantity: 25,
+          sku: "WKS001-SIZE-M",
+        },
+        {
+          value: "L",
+          variantId: womensStraightDressSizeVariant.id,
+          price: 169.99,
+          quantity: 25,
+          sku: "WKS001-SIZE-L",
+        },
+        {
+          value: "XL",
+          variantId: womensStraightDressSizeVariant.id,
+          price: 169.99,
+          quantity: 25,
+          sku: "WKS001-SIZE-XL",
+        },
+      ],
+    });
+  }
 
   const mensKaftanSet = await prisma.products.create({
     data: {
@@ -859,12 +1265,6 @@ async function main() {
         create: [
           {
             name: "Size",
-            values: ["M", "L", "XL", "XXL"],
-            stock: 40,
-            price: 189.99,
-            salesPrice: 169.99,
-            sku: "MKS002-SIZE-001",
-            isAvailable: true,
             link: "mens-kaftan-size",
             slug: "mens-kaftan-size",
           },
@@ -881,6 +1281,49 @@ async function main() {
       },
     },
   });
+
+  // Create variant values for the mensKaftanSet product's size variant
+  const mensKaftanSetSizeVariant = await prisma.productVariant.findFirst({
+    where: {
+      name: "Size",
+      productId: mensKaftanSet.id,
+    },
+  });
+
+  if (mensKaftanSetSizeVariant) {
+    await prisma.productVariantValue.createMany({
+      data: [
+        {
+          value: "S",
+          variantId: mensKaftanSetSizeVariant.id,
+          price: 189.99,
+          quantity: 25,
+          sku: "MKS002-SIZE-S",
+        },
+        {
+          value: "M",
+          variantId: mensKaftanSetSizeVariant.id,
+          price: 189.99,
+          quantity: 25,
+          sku: "MKS002-SIZE-M",
+        },
+        {
+          value: "L",
+          variantId: mensKaftanSetSizeVariant.id,
+          price: 189.99,
+          quantity: 25,
+          sku: "MKS002-SIZE-L",
+        },
+        {
+          value: "XL",
+          variantId: mensKaftanSetSizeVariant.id,
+          price: 189.99,
+          quantity: 25,
+          sku: "MKS002-SIZE-XL",
+        },
+      ],
+    });
+  }
 
   const womensAnkaraBlouse = await prisma.products.create({
     data: {
@@ -917,12 +1360,6 @@ async function main() {
         create: [
           {
             name: "Size",
-            values: ["XS", "S", "M", "L"],
-            stock: 65,
-            price: 89.99,
-            salesPrice: 69.99,
-            sku: "WAP001-SIZE-001",
-            isAvailable: true,
             link: "peplum-blouse-size",
             slug: "peplum-blouse-size",
           },
@@ -940,6 +1377,49 @@ async function main() {
     },
   });
 
+  // Create variant values for the womensAnkaraBlouse product's size variant
+  const womensAnkaraBlouseSizeVariant = await prisma.productVariant.findFirst({
+    where: {
+      name: "Size",
+      productId: womensAnkaraBlouse.id,
+    },
+  });
+
+  if (womensAnkaraBlouseSizeVariant) {
+    await prisma.productVariantValue.createMany({
+      data: [
+        {
+          value: "S",
+          variantId: womensAnkaraBlouseSizeVariant.id,
+          price: 89.99,
+          quantity: 25,
+          sku: "WAP001-SIZE-S",
+        },
+        {
+          value: "M",
+          variantId: womensAnkaraBlouseSizeVariant.id,
+          price: 89.99,
+          quantity: 25,
+          sku: "WAP001-SIZE-M",
+        },
+        {
+          value: "L",
+          variantId: womensAnkaraBlouseSizeVariant.id,
+          price: 89.99,
+          quantity: 25,
+          sku: "WAP001-SIZE-L",
+        },
+        {
+          value: "XL",
+          variantId: womensAnkaraBlouseSizeVariant.id,
+          price: 89.99,
+          quantity: 25,
+          sku: "WAP001-SIZE-XL",
+        },
+      ],
+    });
+  }
+
   // After creating all products, set up related products
   await prisma.products.update({
     where: { id: mensKentePrintShirt.id },
@@ -947,8 +1427,8 @@ async function main() {
       relatedProducts: {
         create: [
           {
-            link: "mens-fugu-smock",
-            slug: "mens-fugu-smock",
+            link: fuguSmock.link,
+            slug: fuguSmock.slug,
             id: fuguSmock.id,
           },
         ],

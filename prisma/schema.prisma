@@ -8,20 +8,19 @@ datasource db {
 }
 
 model Admin {
-  id                          String @id
-  firstName                   String
-  lastName                    String
- 
+  id        String @id
+  firstName String
+  lastName  String
 }
 
-model User{
-  id                          String @id
-  firstName                   String
-  lastName                    String
+model User {
+  id        String @id
+  firstName String
+  lastName  String
 
-  productReview               ProductReview[]
-  wishlist                    ProductWishlist[]
-  productLike                 ProductLike[]
+  productReview ProductReview[]
+  wishlist      ProductWishlist[]
+  productLike   ProductLike[]
 }
 
 enum ProductStatus {
@@ -30,282 +29,264 @@ enum ProductStatus {
   ARCHIVED
 }
 
-enum DiscountType{
+enum DiscountType {
   PERCENTAGE
   FIXED
 }
 
 model Category {
-  id                          Int @id @default(autoincrement())
-  name                        String
-  link                        String
-  slug                        String
-  image                       String
-  createdAt                   DateTime @default(now())
-  
-  subcategory                 Subcategory[]
-  products                    Products[]
+  id        Int      @id @default(autoincrement())
+  name      String
+  link      String
+  slug      String
+  image     String
+  createdAt DateTime @default(now())
 
+  subcategory Subcategory[]
+  products    Products[]
 }
 
+model Subcategory {
+  id         Int      @id @default(autoincrement())
+  name       String
+  link       String
+  slug       String
+  categoryId Int
+  category   Category @relation(fields: [categoryId], references: [id])
 
-model Subcategory{
-  id                          Int @id @default(autoincrement())
-  name                        String
-  link                        String
-  slug                        String
-  categoryId                  Int
-  category                    Category @relation(fields: [categoryId], references: [id])
-
-  products                    Products[]
-
+  products Products[]
 }
 
-model Pages{
-  id                          Int @id @default(autoincrement())
-  name                        String
-  link                        String
-  slug                        String
-  createdAt                   DateTime @default(now())
+model Pages {
+  id        Int      @id @default(autoincrement())
+  name      String
+  link      String
+  slug      String
+  createdAt DateTime @default(now())
 
-  subpage                     Subpage[]
+  subpage Subpage[]
 }
 
-model Subpage{
-  id                          Int @id @default(autoincrement())
-  name                        String
-  link                        String
-  slug                        String
-  createdAt                   DateTime @default(now())
-  pageId                      Int
-  page                        Pages @relation(fields: [pageId], references: [id])
+model Subpage {
+  id        Int      @id @default(autoincrement())
+  name      String
+  link      String
+  slug      String
+  createdAt DateTime @default(now())
+  pageId    Int
+  page      Pages    @relation(fields: [pageId], references: [id])
 }
 
-model Products{
-  id                          Int @id @default(autoincrement())
-  name                        String
-  link                        String
-  slug                        String
-  createdAt                   DateTime @default(now())
-  description                 String
-  price                       Decimal?
-  salesPrice                  Decimal?
-  sku                         String?
-  isAvailable                 Boolean @default(true)
-  featured                    Boolean @default(false)
-  status                      ProductStatus @default(DRAFT)
+model Products {
+  id          Int           @id @default(autoincrement())
+  name        String
+  link        String
+  slug        String
+  createdAt   DateTime      @default(now())
+  description String
+  price       Decimal
+  salesPrice  Decimal?
+  sku         String?
+  isAvailable Boolean       @default(true)
+  featured    Boolean       @default(false)
+  status      ProductStatus @default(DRAFT)
 
-//Relations
-  subcategoryId               Int
-  subcategory                 Subcategory @relation(fields: [subcategoryId], references: [id])
-  categoryId                  Int
-  category                    Category @relation(fields: [categoryId], references: [id])
+  //Relations
+  subcategoryId Int
+  subcategory   Subcategory @relation(fields: [subcategoryId], references: [id])
+  categoryId    Int
+  category      Category    @relation(fields: [categoryId], references: [id])
 
-  brandId                     Int
-  brand                       Brand? @relation(fields: [brandId], references: [id])
+  brandId Int
+  brand   Brand? @relation(fields: [brandId], references: [id])
 
-  variants                    ProductVariant[]
-  images                      ProductImage[]
-  reviews                     ProductReview[]
-  tags                        ProductTag[]
-  attributes                  ProductAttributeValue[]
-  relatedProducts             RelatedProduct[]
-  wishlist                    ProductWishlist[]
-  discounts                   Discount[]
-  likes                       ProductLike[]
+  variants        ProductVariant[]
+  images          ProductImage[]
+  reviews         ProductReview[]
+  tags            ProductTag[]
+  attributes      ProductAttributeValue[]
+  relatedProducts RelatedProduct[]
+  wishlist        ProductWishlist[]
+  discounts       Discount[]
+  likes           ProductLike[]
+
   @@index([name])
   @@index([price])
   @@index([status])
 }
 
-
-model Brand{
-  id                          Int @id @default(autoincrement())
-  name                        String
-  link                        String
-  slug                        String
-  logo                        String?
-  createdAt                   DateTime @default(now())
-  description                 String?
+model Brand {
+  id          Int      @id @default(autoincrement())
+  name        String
+  link        String
+  slug        String
+  logo        String?
+  createdAt   DateTime @default(now())
+  description String?
 
   //relations
 
-  products    Products[]
+  products Products[]
 
   @@index([name])
 }
 
-model ProductVariant{
-  id                          Int @id @default(autoincrement())
-  name                        String
-  link                        String
-  slug                        String
-  values                      String[]
-  stock                       Int
-  price                       Float
-  salesPrice                  Float?
-  sku                         String
-  isAvailable                 Boolean @default(true)
-  status                      ProductStatus @default(DRAFT)
-
-
+model ProductVariant {
+  id   Int    @id @default(autoincrement())
+  name String
+  link String
+  slug String
 
   //relations
-
-  product                     Products @relation(fields: [productId], references: [id])
-  productId                   Int
-  attributes                  ProductAttributeValue[]
+  product    Products                @relation(fields: [productId], references: [id])
+  productId  Int
+  values     ProductVariantValue[]
 
   @@index([name])
-  @@index([price])
-
-  
-  
-  // products                    Products[]
 }
 
-model ProductImage{
-  id                          Int @id @default(autoincrement())
-  link                        String
-  slug                        String
-  altText                     String?
-  isPrimary                   Boolean
+model ProductImage {
+  id        Int     @id @default(autoincrement())
+  link      String
+  slug      String
+  altText   String?
+  isPrimary Boolean
 
   //relation
 
-  productId                   Int
-  product                     Products @relation(fields: [productId], references: [id])
+  productId Int
+  product   Products @relation(fields: [productId], references: [id])
 }
 
-model ProductReview{
-  id                          Int @id @default(autoincrement())
-  title                       String?
-  rating                      Int
-  comment                     String?
-  createdAt                   DateTime @default(now())
-  updatedAt                   DateTime @updatedAt
+model ProductReview {
+  id        Int      @id @default(autoincrement())
+  title     String?
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   //relations
-  userId                      String
-  user                        User @relation(fields: [userId], references: [id])                       
-  productId                   Int
-  product                     Products @relation(fields: [productId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  productId Int
+  product   Products @relation(fields: [productId], references: [id])
 
   @@index([rating])
-} 
+}
 
-model ProductLike{
-  id                          Int @id @default(autoincrement())
-  createdAt                   DateTime @default(now())
+model ProductLike {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
 
   //relations
-  productId                   Int
-  product                     Products @relation(fields: [productId], references: [id])
-  userId                      String
-  user                        User @relation(fields: [userId], references: [id])
+  productId Int
+  product   Products @relation(fields: [productId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
 
   @@index([userId, productId])
 }
 
-model ProductTag{
-  id                          Int @id @default(autoincrement())
-  name                         String @unique
+model ProductTag {
+  id   Int    @id @default(autoincrement())
+  name String @unique
 
   //relations
-  productId                   Int
-  product                     Products @relation(fields: [productId], references: [id])
+  productId Int
+  product   Products @relation(fields: [productId], references: [id])
 
   @@index([name])
-} 
-
-model ProductAttribute{
-  id                          Int @id @default(autoincrement())
-  name                        String
-  description                 String?
-
-  //relations
-  values                      ProductAttributeValue[]
-
-  @@index([name])
-
-
-}   
-
-
-model ProductAttributeValue{
-  id                          Int @unique
-  value                       String
-
-  //relations
-  attributeId                 Int
-  attribute                   ProductAttribute @relation(fields: [attributeId], references: [id])
-
-  productId                   Int
-  product                     Products @relation(fields: [productId], references: [id])
-  variantId            Int
-  variant              ProductVariant @relation(fields: [variantId], references: [id])
 }
 
+model ProductAttribute {
+  id          Int     @id @default(autoincrement())
+  name        String
+  description String?
 
+  //relations
+  values ProductAttributeValue[]
 
+  @@index([name])
+}
 
+model ProductAttributeValue {
+  id    Int    @id @default(autoincrement())
+  value String
 
-model RelatedProduct{
-  id                          Int @id @default(autoincrement())
-  link                        String
-  slug                        String
-  productId                   Int
-  product                     Products @relation(fields: [productId], references: [id])
-}   
+  //relations
+  attributeId Int
+  attribute   ProductAttribute @relation(fields: [attributeId], references: [id])
 
+  productId Int
+  product   Products       @relation(fields: [productId], references: [id])
+}
 
+model RelatedProduct {
+  id        Int      @id @default(autoincrement())
+  link      String
+  slug      String
+  productId Int
+  product   Products @relation(fields: [productId], references: [id])
+}
 
-model ProductWishlist{
-  id                          Int @id @default(autoincrement())
-  createdAt                   DateTime @default(now())
- 
+model ProductWishlist {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+
   //relation
-  productId                   Int
-  product                     Products @relation(fields: [productId], references: [id])
-  userId                      String
-  user                        User @relation(fields: [userId], references: [id])
+  productId Int
+  product   Products @relation(fields: [productId], references: [id])
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
 
   @@index([userId, productId])
 }
 
-
-model Discount{
-  id                          Int @id @default(autoincrement())
-  createdAt                   DateTime @default(now())
-  updatedAt                   DateTime @updatedAt
-  name                        String
-  description                 String?
-  type                        DiscountType
-  value                       Decimal
-  startDate                   DateTime
-  endDate                     DateTime
-  products                    Products[]
-  isActive                    Boolean
+model Discount {
+  id          Int          @id @default(autoincrement())
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  name        String
+  description String?
+  type        DiscountType
+  value       Decimal
+  startDate   DateTime
+  endDate     DateTime
+  products    Products[]
+  isActive    Boolean
 
   @@index([startDate])
   @@index([endDate])
 }
 
+model Slide {
+  id          Int      @id @default(autoincrement())
+  name        String
+  title       String
+  description String?
+  subTitle    String?
+  btn         String
+  textColor   String?
+  image       String
+  link        String?
+  order       Int?
+  slug        String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
 
-model Slide{
-  id                          Int @id @default(autoincrement())
-  name                        String
-  title                       String
-  description                 String?
-  subTitle                    String?
-  btn                         String
-  textColor                   String?
-  image                       String
-  link                        String?
-  order                       Int?
-  slug                        String
-  createdAt                   DateTime @default(now())
-  updatedAt                   DateTime @updatedAt
+model ProductVariantValue {
+  id        Int     @id @default(autoincrement())
+  value     String
+  hexCode   String?
+  variantId Int
+  variant   ProductVariant @relation(fields: [variantId], references: [id])
+  
+  price     Decimal
+  quantity  Int
+  sku       String  @unique
 
-
+  @@index([value])
+  @@unique([variantId, value])
 }

@@ -98,7 +98,7 @@ const ProductCardTwo = ({ item }: { item: Product }) => {
               <div className="flex flex-wrap  justify-between w-full">
                 <CurrencyFormat
                   value={item.salesPrice}
-                  className="font-bold text-primary-900 text-left w-20 text-xl "
+                  className="font-bold text-primary-600 text-left w-20 text-xl "
                 />
                 <CurrencyFormat
                   value={item.price}
@@ -108,7 +108,7 @@ const ProductCardTwo = ({ item }: { item: Product }) => {
             ) : (
               <CurrencyFormat
                 value={item.price}
-                className="font-bold text-primary-900 text-left w-20 text-2xl "
+                className="font-bold text-primary-600 text-left w-20 text-2xl "
               />
             )}
           </div>
@@ -116,7 +116,7 @@ const ProductCardTwo = ({ item }: { item: Product }) => {
             className="flex gap-2 items-center
           "
           >
-            <Star fill="gold" className="text-yellow-600" />
+            <Star fill="#d97706" className="text-yellow-600" />
             <p>4.5</p>
           </span>
           <p className="text-sm lg:text-lg font-normal">

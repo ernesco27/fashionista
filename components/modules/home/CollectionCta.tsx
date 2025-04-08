@@ -45,7 +45,12 @@ const CollectionCta = () => {
               transition={{ duration: 1.2, type: "spring" }}
               className="mt-4"
             >
-              <CustomButton name="Shop Now" />
+              <CustomButton
+                name="Shop Now"
+                primaryColor="#eab308"
+                secondColor="white"
+                outlineColor="#eab308"
+              />
             </m.div>
           </m.div>
           <m.div
@@ -81,7 +86,12 @@ const CollectionCta = () => {
               transition={{ duration: 1.2, type: "spring" }}
               className="mt-4"
             >
-              <CustomButton name="Shop Now" />
+              <CustomButton
+                name="Shop Now"
+                primaryColor="white"
+                secondColor="#eab308"
+                outlineColor="#eab308"
+              />
             </m.div>
           </m.div>
         </div>

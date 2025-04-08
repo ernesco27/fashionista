@@ -12,7 +12,7 @@ import { Product } from "@/types";
 import ProductCard from "@/components/custom/ProductCard";
 import Row from "@/components/custom/Row";
 import Heading from "@/components/custom/Heading";
-import ProductCardTwo from "@/components/custom/ProductCardTwo";
+import { m } from "framer-motion";
 
 const FeaturedProducts = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -24,7 +24,20 @@ const FeaturedProducts = () => {
   console.log("products:", products);
 
   return (
-    <section className="py-10 w-full">
+    <m.section
+      initial={{
+        opacity: 0,
+        y: 100,
+      }}
+      whileInView={{
+        opacity: 1,
+        y: 0,
+      }}
+      transition={{
+        duration: 0.3,
+      }}
+      className="py-10 w-full"
+    >
       {/* {isLoading && <Loading isLoading />} */}
       <Container>
         <Row className="mb-10">
@@ -72,7 +85,7 @@ const FeaturedProducts = () => {
             ))}
         </Swiper>
       </Container>
-    </section>
+    </m.section>
   );
 };
 

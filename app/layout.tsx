@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import * as React from "react";
 
 import "./globals.css";
-import { kanit } from "@/app/fonts";
+
+import { Jost } from "next/font/google";
 import Providers from "@/providers";
 import { cn } from "@/lib/utils";
 
@@ -11,6 +12,11 @@ export const metadata: Metadata = {
   description: "The No.1 fashion store",
 };
 
+const jost = Jost({
+  subsets: ["latin"],
+  display: "swap",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -18,7 +24,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn("min-h-screen overflow-x-hidden", kanit.className)}>
+      <body className={cn("min-h-screen overflow-x-hidden", jost.className)}>
         <Providers>{children}</Providers>
       </body>
     </html>

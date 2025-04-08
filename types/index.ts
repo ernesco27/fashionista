@@ -4,6 +4,8 @@ import {
   ProductReview,
   ProductTag,
   ProductImage,
+  ProductVariantValue,
+  Prisma,
 } from "@prisma/client";
 
 export type SubCategory = {
@@ -70,15 +72,26 @@ export type Discount = {
   isActive: boolean;
 };
 
+export type ProductVariantValueWithDetails = ProductVariantValue & {
+  hexCode?: string | null;
+  price: Prisma.Decimal;
+  quantity: number;
+  sku: string;
+};
+
+export type ProductVariantWithValues = ProductVariant & {
+  values?: ProductVariantValueWithDetails[];
+};
+
 export type Product = {
   id: number;
   name: string;
   link: string;
   slug: string;
   description: string;
-  price: number;
-  salesPrice: number;
-  sku: string;
+  price: Prisma.Decimal;
+  salesPrice: Prisma.Decimal | null;
+  sku: string | null;
   status: string;
   subcategoryId: number;
   categoryId: number;
@@ -91,7 +104,7 @@ export type Product = {
   wishlist?: ProductWishlist[];
   discounts?: Discount[];
   images: ProductImage[];
-  variants?: ProductVariant[];
+  variants?: ProductVariantWithValues[];
   reviews?: ProductReview[];
   tags?: ProductTag[];
   attributes?: ProductAttribute[];

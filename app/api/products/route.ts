@@ -34,9 +34,20 @@ export async function GET() {
       },
       variants: {
         select: {
+          id: true,
           name: true,
-          price: true,
-          salesPrice: true,
+          link: true,
+          slug: true,
+          values: {
+            select: {
+              id: true,
+              value: true,
+              hexCode: true,
+              price: true,
+              quantity: true,
+              sku: true,
+            },
+          },
         },
       },
       reviews: {
