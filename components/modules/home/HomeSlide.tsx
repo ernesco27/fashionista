@@ -3,7 +3,8 @@
 import Container from "@/components/custom/Container";
 import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { Autoplay, Navigation, Pagination, EffectFade } from "swiper/modules";
+
 import "swiper/css";
 import "swiper/css/navigation";
 import useSWR from "swr";
@@ -55,7 +56,7 @@ const HomeSlide = () => {
                 key={item.id}
                 className="relative [&>button]:block hover:animate-heart-beating"
                 style={{
-                  backgroundImage: `url(/assets/${item.image})`,
+                  backgroundImage: `url(${item.image})`,
                   height: "700px",
                   width: "100%",
                   backgroundSize: "cover",

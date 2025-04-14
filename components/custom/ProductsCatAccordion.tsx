@@ -54,6 +54,7 @@ const ProductsCatAccordion = () => {
                 <div className="flex flex-col gap-4 ms-10">
                   {item.subcategory.map((itemSub: SubCategory) => (
                     <Link
+                      key={itemSub.id}
                       href={`/categories/${itemSub.link}/products`}
                       className="text-xl min-w-40 hover:text-primary-900"
                     >

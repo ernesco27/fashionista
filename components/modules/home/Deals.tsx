@@ -13,6 +13,7 @@ import Row from "@/components/custom/Row";
 import Heading from "@/components/custom/Heading";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import "swiper/css/pagination";
 import ProductCardTwo from "@/components/custom/ProductCardTwo";
 
 const Deals = () => {
@@ -81,7 +82,7 @@ const Deals = () => {
           navigation={false}
           pagination={true}
           modules={[Autoplay, Navigation, Pagination]}
-          className=" w-full flex items-center justify-center rounded-md  py-10"
+          className=" w-full flex items-center justify-center rounded-md"
         >
           {products
             ?.filter((item: Product) => item.featured === true)

@@ -7,12 +7,14 @@ const CustomButton = ({
   secondColor,
   outlineColor,
   disabled = false,
+  size = "default",
 }: {
   name: string;
   primaryColor: string;
   secondColor: string;
   outlineColor: string;
   disabled?: boolean;
+  size?: "sm" | "default" | "lg";
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -26,10 +28,17 @@ const CustomButton = ({
     setIsHovered(false);
   };
 
+  const sizeClasses = {
+    sm: "w-[150px] text-sm",
+    default: "w-[170px] text-base",
+    lg: "w-[200px] text-lg",
+  };
+
   return (
     <button
       className={cn(
-        "relative flex items-center gap-1 px-9 py-1 border-4 border-transparent text-base font-semibold rounded-full overflow-hidden transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] group",
+        "relative flex items-center gap-1 px-9 py-1 border-4 border-transparent font-semibold rounded-full overflow-hidden transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] group",
+        sizeClasses[size],
         {
           "cursor-not-allowed opacity-60 bg-slate-300 text-slate-500": disabled,
           "cursor-pointer hover:rounded-xl active:scale-95": !disabled,
@@ -67,7 +76,7 @@ const CustomButton = ({
       </svg>
       <span
         className={cn(
-          "relative z-[1] -translate-x-3 transition-all duration-600 ease-[cubic-bezier(0.23,1,0.32,1)] text-sm lg:text-lg",
+          "text-[14px] lg:text-lg relative z-[1] -translate-x-3 transition-all duration-600 ease-[cubic-bezier(0.23,1,0.32,1)]",
           !disabled && "group-hover:translate-x-3",
         )}
       >

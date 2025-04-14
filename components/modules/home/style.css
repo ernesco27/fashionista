@@ -8,7 +8,7 @@
 }
 
 .swiper-pagination-bullet-active {
-  background-color: #000000;
+  background-color: #d97706 !important;
   width: 40px;
   border-radius: 10px;
 }
@@ -23,7 +23,7 @@
 
 .swiper-button-prev,
 .swiper-button-next {
-  background-color: #000000;
+  background-color: #d97706 !important;
   color: white;
   height: 40px;
   width: 30px;

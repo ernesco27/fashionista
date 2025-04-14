@@ -14,9 +14,11 @@ export async function GET() {
       status: true,
       createdAt: true,
       description: true,
+      fullDescription: true,
       sku: true,
       isAvailable: true,
       featured: true,
+      materialType: true,
       subcategory: {
         select: {
           name: true,
@@ -32,27 +34,20 @@ export async function GET() {
           name: true,
         },
       },
-      variants: {
-        select: {
-          id: true,
-          name: true,
-          link: true,
-          slug: true,
-          values: {
-            select: {
-              id: true,
-              value: true,
-              hexCode: true,
-              price: true,
-              quantity: true,
-              sku: true,
-            },
-          },
-        },
-      },
       reviews: {
         select: {
           rating: true,
+          comment: true,
+          createdAt: true,
+          user: {
+            select: {
+              id: true,
+              isActive: true,
+              firstName: true,
+              lastName: true,
+              photo: true,
+            },
+          },
         },
       },
       tags: {
@@ -84,6 +79,41 @@ export async function GET() {
         select: {
           name: true,
           value: true,
+        },
+      },
+      variants: {
+        select: {
+          id: true,
+          name: true,
+          link: true,
+          slug: true,
+          values: {
+            select: {
+              id: true,
+              value: true,
+              hexCode: true,
+            },
+          },
+        },
+      },
+      productItems: {
+        select: {
+          id: true,
+          sku: true,
+          price: true,
+          quantity: true,
+          variantValues: {
+            select: {
+              id: true,
+              value: true,
+              variantId: true,
+              variant: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
         },
       },
     },

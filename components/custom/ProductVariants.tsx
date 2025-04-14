@@ -1,11 +1,8 @@
-import {
-  Product,
-  ProductVariantWithValues,
-  ProductVariantValueWithDetails,
-} from "@/types";
-import React from "react";
+import { Product, ProductVariantWithValues, ProductItem } from "@/types";
+import { ProductVariantValue as PrismaProductVariantValue } from "@prisma/client";
+import React, { useMemo } from "react";
 import { Label } from "../ui/label";
-import { cn } from "@/lib/utils";
+import { cn, isCombinationAvailable } from "@/lib/utils";
 
 const ProductVariants = ({
   product,
@@ -20,12 +17,6 @@ const ProductVariants = ({
       | ((prev: Record<string, string>) => Record<string, string>),
   ) => void;
 }) => {
-  // const [selectedVariants, setSelectedVariants] = useState<
-  //   Record<string, string>
-  // >({});
-
-  console.log("product:", product);
-
   const handleVariantChange = (variantName: string, value: string) => {
     setSelectedVariants((prev: Record<string, string>) => ({
       ...prev,
@@ -33,12 +24,75 @@ const ProductVariants = ({
     }));
   };
 
+  // Debug product items
+  console.log("Product items:", product.productItems);
+  console.log("Selected variants:", selectedVariants);
+
+  // Memoize available options based on current selections
+  const availableOptionsMap = useMemo(() => {
+    const availableMap: Record<string, Set<string>> = {};
+    if (!product.productItems || !product.variants) return availableMap;
+
+    // Initialize sets for each variant type
+    for (const variant of product.variants) {
+      availableMap[variant.name] = new Set();
+    }
+
+    // If no selections have been made yet, all options should be available
+    if (Object.keys(selectedVariants).length === 0) {
+      console.log("No selections made yet, all options should be available");
+      for (const variant of product.variants) {
+        variant.values?.forEach((value) => {
+          availableMap[variant.name]?.add(value.value);
+        });
+      }
+      return availableMap;
+    }
+
+    // For each variant type, check which options are available
+    for (const variant of product.variants) {
+      // For each option in this variant type
+      variant.values?.forEach((option) => {
+        // Check if this option is available with current selections
+        const isAvailable = isCombinationAvailable(
+          product,
+          variant.name,
+          option.value,
+          selectedVariants,
+        );
+
+        if (isAvailable) {
+          availableMap[variant.name]?.add(option.value);
+        }
+      });
+    }
+
+    // Log the available options for debugging
+    console.log("Available options map:", availableMap);
+
+    // For each variant type, check if any options are available
+    for (const variant of product.variants) {
+      const availableOptions = Array.from(availableMap[variant.name] || []);
+      console.log(`Available options for ${variant.name}:`, availableOptions);
+
+      // If no options are available for a variant type, add all options
+      if (availableOptions.length === 0) {
+        console.log(
+          `No options available for ${variant.name}, adding all options`,
+        );
+        variant.values?.forEach((value) => {
+          availableMap[variant.name]?.add(value.value);
+        });
+      }
+    }
+
+    return availableMap;
+  }, [product.productItems, product.variants, selectedVariants]);
+
   return (
     <div className="space-y-2.5 flex flex-col gap-8 mb-10">
       {product.variants?.map((variant: ProductVariantWithValues) => {
         const selectedValue = selectedVariants[variant.name];
-
-        // Find the details of the selected value for display (e.g., hex code)
         const selectedOptionDetails = variant.values?.find(
           (v) => v.value === selectedValue,
         );
@@ -70,69 +124,86 @@ const ProductVariants = ({
                 </span>
               </Label>
             </legend>
-            <div className="flex flex-wrap items-center gap-4 ">
-              {variant.values?.map((option: ProductVariantValueWithDetails) => {
-                const isSelected =
-                  selectedVariants[variant.name] === option.value;
-                const isColorOption =
-                  variant.name === "Color" && option.hexCode;
-                const isOutOfStock = option.quantity <= 0;
+            <div className="flex flex-wrap gap-6">
+              {variant.values?.map(
+                (
+                  option: PrismaProductVariantValue & {
+                    hexCode?: string | null;
+                  },
+                ) => {
+                  const isSelected =
+                    selectedVariants[variant.name] === option.value;
+                  const isColorOption =
+                    variant.name === "Color" && option.hexCode;
+                  const isAvailableBasedOnSelection =
+                    availableOptionsMap[variant.name]?.has(option.value) ??
+                    false;
+                  const isDisabled = !isAvailableBasedOnSelection;
 
-                return (
-                  <div key={option.id} className="flex items-center relative">
-                    <input
-                      type="radio"
-                      id={`${variant.id}-${option.id}`}
-                      name={variant.name}
-                      value={option.value}
-                      checked={isSelected}
-                      onChange={() =>
-                        handleVariantChange(variant.name, option.value)
-                      }
-                      disabled={isOutOfStock}
-                      className="peer hidden"
-                    />
-                    {isColorOption ? (
-                      <Label
-                        htmlFor={`${variant.id}-${option.id}`}
-                        className={cn(
-                          "relative w-8 h-8 rounded-full flex items-center justify-center",
-                          isOutOfStock
-                            ? "cursor-not-allowed opacity-50"
-                            : "cursor-pointer",
-                          isSelected && "ring-2 ring-offset-2 ring-primary-500",
-                        )}
-                        style={{ backgroundColor: option.hexCode ?? undefined }}
-                      >
-                        <span className="sr-only">{option.value}</span>
-                        {isOutOfStock && (
-                          <span className="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">
-                            X
-                          </span>
-                        )}
-                      </Label>
-                    ) : (
-                      <Label
-                        htmlFor={`${variant.id}-${option.id}`}
-                        className={cn(
-                          "flex items-center justify-center min-w-14 gap-1.5 border p-2",
-                          isOutOfStock
-                            ? "cursor-not-allowed text-slate-400 bg-slate-100 line-through"
-                            : "cursor-pointer",
-                          isSelected && !isOutOfStock
-                            ? "bg-primary-500 text-white border-primary-500"
-                            : "",
-                          isSelected &&
-                            isOutOfStock &&
-                            "bg-slate-300 text-slate-500 border-slate-400",
-                        )}
-                      >
-                        {option.value}
-                      </Label>
-                    )}
-                  </div>
-                );
-              })}
+                  return (
+                    <div key={option.id} className="flex items-center relative">
+                      <input
+                        type="radio"
+                        id={`${variant.id}-${option.id}`}
+                        name={variant.name}
+                        value={option.value}
+                        checked={isSelected}
+                        onChange={() =>
+                          handleVariantChange(variant.name, option.value)
+                        }
+                        disabled={isDisabled}
+                        className="peer hidden"
+                      />
+                      {isColorOption ? (
+                        <Label
+                          htmlFor={`${variant.id}-${option.id}`}
+                          className={cn(
+                            "relative w-8 h-8 rounded-full flex items-center justify-center",
+                            isDisabled
+                              ? "cursor-not-allowed opacity-50"
+                              : "cursor-pointer",
+                            isSelected && "ring-2 ring-offset-2",
+                          )}
+                          style={{
+                            backgroundColor: option.hexCode ?? undefined,
+                            ...(isSelected && option.hexCode
+                              ? {
+                                  ringColor: option.hexCode,
+                                  boxShadow: `0 0 0 2px white, 0 0 0 4px ${option.hexCode}`,
+                                }
+                              : {}),
+                          }}
+                        >
+                          <span className="sr-only">{option.value}</span>
+                          {isDisabled && (
+                            <span className="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">
+                              X
+                            </span>
+                          )}
+                        </Label>
+                      ) : (
+                        <Label
+                          htmlFor={`${variant.id}-${option.id}`}
+                          className={cn(
+                            "flex items-center justify-center min-w-14 gap-1.5 border p-2",
+                            isDisabled
+                              ? "cursor-not-allowed text-slate-400 bg-slate-100 line-through"
+                              : "cursor-pointer",
+                            isSelected && !isDisabled
+                              ? "bg-primary-500 text-white border-primary-500"
+                              : "",
+                            isSelected && isDisabled
+                              ? "bg-slate-300 text-slate-500 border-slate-400 line-through"
+                              : "",
+                          )}
+                        >
+                          {option.value}
+                        </Label>
+                      )}
+                    </div>
+                  );
+                },
+              )}
             </div>
           </fieldset>
         );

@@ -17,7 +17,12 @@ model User {
   id        String @id
   firstName String
   lastName  String
-
+  email     String
+  photo     String?
+  isActive  Boolean @default(true)
+  emailVerified Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   productReview ProductReview[]
   wishlist      ProductWishlist[]
   productLike   ProductLike[]
@@ -84,12 +89,14 @@ model Products {
   slug        String
   createdAt   DateTime      @default(now())
   description String
-  price       Decimal
+  fullDescription String?
+  price       Decimal       // Base price for display when no variant selected
   salesPrice  Decimal?
-  sku         String?
+  sku         String?       // Base SKU
   isAvailable Boolean       @default(true)
   featured    Boolean       @default(false)
   status      ProductStatus @default(DRAFT)
+  materialType String?
 
   //Relations
   subcategoryId Int
@@ -109,6 +116,7 @@ model Products {
   wishlist        ProductWishlist[]
   discounts       Discount[]
   likes           ProductLike[]
+  productItems    ProductItem[] // Added relation to ProductItem
 
   @@index([name])
   @@index([price])
@@ -133,7 +141,7 @@ model Brand {
 
 model ProductVariant {
   id   Int    @id @default(autoincrement())
-  name String
+  name String // e.g., "Size", "Color"
   link String
   slug String
 
@@ -278,15 +286,32 @@ model Slide {
 
 model ProductVariantValue {
   id        Int     @id @default(autoincrement())
-  value     String
-  hexCode   String?
+  value     String  // e.g., "S", "M", "Red", "Blue"
+  hexCode   String? // Only for color variants
   variantId Int
   variant   ProductVariant @relation(fields: [variantId], references: [id])
   
-  price     Decimal
-  quantity  Int
-  sku       String  @unique
+  // Relation to ProductItem (Many-to-Many)
+  productItems ProductItem[] 
 
   @@index([value])
   @@unique([variantId, value])
+}
+
+// NEW MODEL: Represents a specific purchasable combination of variant values
+model ProductItem {
+  id          Int       @id @default(autoincrement())
+  sku         String    @unique // Unique SKU for this specific combination
+  price       Decimal   // Price for this specific combination
+  quantity    Int       // Stock quantity for this specific combination
+  createdAt   DateTime  @default(now())
+
+  // Relation to the base product
+  productId   Int
+  product     Products  @relation(fields: [productId], references: [id])
+
+  // Relation to the specific variant values that define this item (Many-to-Many)
+  variantValues ProductVariantValue[]
+
+  @@index([sku])
 }

@@ -66,8 +66,6 @@ const FeaturedProducts = () => {
               spaceBetween: 40,
             },
           }}
-          //spaceBetween={50}
-          //slidesPerView={5}
           navigation={false}
           pagination={true}
           modules={[Autoplay, Navigation, Pagination]}

@@ -2,13 +2,29 @@ import { PrismaClient, ProductStatus } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
+// Helper function to generate combinations
+function generateCombinations(arrays: any[][]): any[][] {
+  if (!arrays || arrays.length === 0) {
+    return [[]];
+  }
+  const firstArray = arrays[0];
+  const restCombinations = generateCombinations(arrays.slice(1));
+  const combinations = [];
+  for (const item of firstArray) {
+    for (const combo of restCombinations) {
+      combinations.push([item, ...combo]);
+    }
+  }
+  return combinations;
+}
+
 async function main() {
   //SLIDES
   const slideData = [
     {
       title: "Summer Sale",
       description: "Get ready for the hottest deals of the season!",
-      image: "womens-corset-top.png",
+      image: "/assets/womens-corset-top.png",
       link: "categories/womens-fashion/products",
       order: 1,
       name: "banner home",
@@ -20,7 +36,7 @@ async function main() {
     {
       title: "New Arrivals",
       description: "Explore the latest fashion trends!",
-      image: "kente-dress.png",
+      image: "/assets/kente-dress.png",
       link: "categories/womens-fashion/products",
       order: 2,
       name: "banner-home-2",
@@ -32,7 +48,7 @@ async function main() {
     {
       title: "Men's Clothing",
       description: "Discover our most popular products!",
-      image: "mens-kaftan.png",
+      image: "/assets/mens-kaftan.png",
       link: "categories/men-clothing/products",
       order: 3,
       name: "banner-home-3",
@@ -42,7 +58,7 @@ async function main() {
     {
       title: "Gift Ideas",
       description: "Find the perfect present for your loved ones!",
-      image: "shopper.jpg",
+      image: "/assets/shopper.jpg",
       link: "gift-ideas",
       order: 4,
       name: "banner-home-3",
@@ -51,7 +67,7 @@ async function main() {
     },
     {
       title: "Women's Fashion",
-      image: "peplum-blouse.png",
+      image: "/assets/peplum-blouse.png",
       link: "categories/womens-fashion/products",
       order: 5,
       name: "top categories",
@@ -60,7 +76,7 @@ async function main() {
     },
     {
       title: "Men's Fashion",
-      image: "mens-embroidered-dashiki.png",
+      image: "/assets/mens-embroidered-dashiki.png",
       link: "categories/mens-fashion/products",
       order: 6,
       name: "top categories",
@@ -69,7 +85,7 @@ async function main() {
     },
     {
       title: "Kid's Fashion",
-      image: "kids.jpg",
+      image: "/assets/kids.jpg",
       link: "categories/kids-fashion/products",
       order: 7,
       name: "top categories",
@@ -78,7 +94,7 @@ async function main() {
     },
     {
       title: "big sale",
-      image: "cta-home.jpg",
+      image: "/assets/cta-home.jpg",
       link: "categories/big-sale/products",
       order: 8,
       name: "cta home",
@@ -88,7 +104,7 @@ async function main() {
     {
       title: "deals of the month",
       description: "Modern ankara corset top with traditional prints",
-      image: "womens-corset-top.png",
+      image: "/assets/womens-corset-top.png",
       link: "/products/womens-ankara-corset-top",
       order: 9,
       name: "cta home",
@@ -233,17 +249,23 @@ async function main() {
   const users = await prisma.user.createMany({
     data: [
       {
-        id: "user_2HNYXXXXXXXXXXX", // Changed from 01 to 2 to ensure new unique ID
+        id: "user_2HNYXXXXXXXXXXX",
         firstName: "John",
         lastName: "Doe",
+        email: "john.doe@example.com",
+        isActive: true,
+        emailVerified: true,
       },
       {
-        id: "user_2HNYYYYYYYYYYYY", // Changed from 01 to 2 to ensure new unique ID
+        id: "user_2HNYYYYYYYYYYYY",
         firstName: "Jane",
         lastName: "Smith",
+        email: "jane.smith@example.com",
+        isActive: true,
+        emailVerified: true,
       },
     ],
-    skipDuplicates: true, // Add this to skip any duplicate entries
+    skipDuplicates: true,
   });
   // First, create the brand
   const brand = await prisma.brand.create({
@@ -286,19 +308,6 @@ async function main() {
     select: { id: true },
   });
 
-  // Create tags
-  // const tags = await prisma.productTag.createMany({
-  //   data: [
-  //     { name: "Kente" },
-  //     { name: "Traditional" },
-  //     { name: "Modern" },
-  //     { name: "Ankara" },
-  //      { name: "Formal Wear" },
-  //      { name: "Casual" },
-  //      { name: "Handmade" },
-  //    ],
-  //  });
-
   // NOW create products
 
   const mensKentePrintShirtData = {
@@ -307,6 +316,8 @@ async function main() {
     slug: "kente-print-shirt",
     description:
       "Traditional Ghanaian kente-inspired print shirt in vibrant colors, perfect for special occasions",
+    fullDescription:
+      "This exquisite Men's Kente Print Shirt is crafted from premium cotton fabric with traditional Ghanaian kente-inspired patterns. The shirt features a classic fit with a button-down collar and long sleeves. The vibrant colors and intricate patterns make it perfect for special occasions, cultural events, or making a bold fashion statement. Care instructions: Machine wash cold, tumble dry low, iron on low heat. Made with 100% premium cotton for comfort and durability.",
     price: 89.99,
     sku: "MKS001-MAIN",
     status: ProductStatus.PUBLISHED,
@@ -314,18 +325,19 @@ async function main() {
     categoryId: categories[2].id,
     brandId: brand.id,
     isAvailable: true,
+    materialType: "Cotton",
 
     // Add images
     images: {
       create: [
         {
-          link: "kente-print-shirt.jpg",
+          link: "/assets/kente-print-shirt.jpg",
           slug: "kente-print-shirt",
           altText: "Men's Kente Print Shirt - Front View",
           isPrimary: true,
         },
         {
-          link: "kente-print-shirt-1.jpg",
+          link: "/assets/kente-print-shirt-1.jpg",
           slug: "kente-print-shirt-1",
           altText: "Men's Kente Print Shirt - Back View",
           isPrimary: false,
@@ -392,85 +404,87 @@ async function main() {
     data: mensKentePrintShirtData,
   });
 
-  // Create variant values for the first product's size variant with price/quantity/sku
-  const sizeVariant = await prisma.productVariant.findFirst({
-    where: {
-      name: "Size",
-      productId: mensKentePrintShirt.id,
-    },
+  // --- Create ProductVariantValues (without price/qty/sku) ---
+  const sizeVariantMKS = await prisma.productVariant.findFirst({
+    where: { name: "Size", productId: mensKentePrintShirt.id },
+  });
+  const colorVariantMKS = await prisma.productVariant.findFirst({
+    where: { name: "Color", productId: mensKentePrintShirt.id },
   });
 
-  if (sizeVariant) {
+  let sizeValuesMKS: any[] = [];
+  if (sizeVariantMKS) {
     await prisma.productVariantValue.createMany({
       data: [
-        {
-          value: "S",
-          variantId: sizeVariant.id,
-          price: 89.99,
-          quantity: 10,
-          sku: "MKS001-SIZE-S",
-        },
-        {
-          value: "M",
-          variantId: sizeVariant.id,
-          price: 95.0,
-          quantity: 20,
-          sku: "MKS001-SIZE-M",
-        },
-        {
-          value: "L",
-          variantId: sizeVariant.id,
-          price: 100.0,
-          quantity: 25,
-          sku: "MKS001-SIZE-L",
-        },
-        {
-          value: "XL",
-          variantId: sizeVariant.id,
-          price: 110.0,
-          quantity: 0,
-          sku: "MKS001-SIZE-XL",
-        },
+        { value: "S", variantId: sizeVariantMKS.id },
+        { value: "M", variantId: sizeVariantMKS.id },
+        { value: "L", variantId: sizeVariantMKS.id },
+        { value: "XL", variantId: sizeVariantMKS.id },
       ],
+    });
+    sizeValuesMKS = await prisma.productVariantValue.findMany({
+      where: { variantId: sizeVariantMKS.id },
     });
   }
 
-  // Create variant values for the first product's color variant with price/quantity/sku
-  const colorVariant = await prisma.productVariant.findFirst({
-    where: {
-      name: "Color",
-      productId: mensKentePrintShirt.id,
-    },
-  });
-
-  if (colorVariant) {
+  let colorValuesMKS: any[] = [];
+  if (colorVariantMKS) {
     await prisma.productVariantValue.createMany({
       data: [
-        {
-          value: "Gold/Blue",
-          hexCode: "#FFD700",
-          variantId: colorVariant.id,
-          price: 89.99,
-          quantity: 25,
-          sku: "MKS001-COLOR-GDBL",
-        },
-        {
-          value: "Green/Black",
-          hexCode: "#006400",
-          variantId: colorVariant.id,
-          price: 89.99,
-          quantity: 25,
-          sku: "MKS001-COLOR-GRBL",
-        },
-        {
-          value: "Red/Yellow",
-          hexCode: "#FF0000",
-          variantId: colorVariant.id,
-          price: 89.99,
-          quantity: 25,
-          sku: "MKS001-COLOR-RDYL",
-        },
+        { value: "Gold", hexCode: "#FFD700", variantId: colorVariantMKS.id },
+        { value: "Green", hexCode: "#006400", variantId: colorVariantMKS.id },
+        { value: "Red", hexCode: "#FF0000", variantId: colorVariantMKS.id },
       ],
+    });
+    colorValuesMKS = await prisma.productVariantValue.findMany({
+      where: { variantId: colorVariantMKS.id },
+    });
+  }
+
+  // --- Create ProductItems for Combinations ---
+  const variantsWithOptionsMKS = [
+    sizeValuesMKS.map((v) => ({ id: v.id, value: v.value, name: "Size" })),
+    colorValuesMKS.map((v) => ({ id: v.id, value: v.value, name: "Color" })),
+  ].filter((arr) => arr.length > 0);
+
+  const combinationsMKS = generateCombinations(variantsWithOptionsMKS);
+
+  for (const combo of combinationsMKS) {
+    const sku = `MKS001-${combo.map((v) => v.value).join("-")}`;
+    let price;
+    let quantity;
+
+    // Check for specific combinations to override price/quantity
+    const isSize = (val: string) =>
+      combo.some((v) => v.name === "Size" && v.value === val);
+    const isColor = (val: string) =>
+      combo.some((v) => v.name === "Color" && v.value === val);
+
+    if (isSize("XL") && isColor("Red")) {
+      quantity = 0; // Out of stock
+      price = mensKentePrintShirt.salesPrice ?? mensKentePrintShirt.price ?? 0; // Use default price
+    } else if (isSize("S") && isColor("Gold")) {
+      quantity = 5;
+      price = 92.5; // Specific price
+    } else if (isSize("M") && isColor("Green")) {
+      quantity = 15;
+      price = 95.0; // Specific price
+    } else {
+      // Default values for other combinations
+      quantity = 10;
+      price = mensKentePrintShirt.salesPrice ?? mensKentePrintShirt.price ?? 0;
+    }
+
+    await prisma.productItem.create({
+      data: {
+        productId: mensKentePrintShirt.id,
+        sku: sku,
+        price: price, // Use the determined price
+        quantity: quantity, // Use the determined quantity
+        variantValues: {
+          connect: combo.map((v) => ({ id: v.id })),
+        },
+      },
     });
   }
 
@@ -481,25 +495,28 @@ async function main() {
       slug: "mens-fugu-smock",
       description:
         "Handwoven northern Ghana fugu smock with intricate embroidery patterns",
+      fullDescription:
+        "The Men's Fugu Smock is a traditional garment handwoven by skilled artisans in northern Ghana. Made from premium cotton fabric, this smock features intricate embroidery patterns that tell stories of the region's rich cultural heritage. The loose, comfortable fit makes it perfect for both casual and formal occasions. The smock includes a matching pair of trousers and comes with a detailed care guide. Hand wash only, dry flat, and iron on low heat. Each piece is unique due to the handcrafted nature of the embroidery.",
       price: 129.99,
       sku: "MFS002-MAIN",
-      status: "PUBLISHED",
+      status: ProductStatus.PUBLISHED,
       subcategoryId: getSubcategoryId("T-Shirt"),
       categoryId: categories[2].id,
       brandId: brand.id,
       isAvailable: true,
       featured: false,
+      materialType: "Cotton",
 
       images: {
         create: [
           {
-            link: "mens-fugu-smock.png",
+            link: "/assets/mens-fugu-smock.png",
             slug: "mens-fugu-smock",
             altText: "Men's Fugu Smock - Front View",
             isPrimary: true,
           },
           {
-            link: "mens-fugu-smock-1.png",
+            link: "/assets/mens-fugu-smock-1.png",
             slug: "mens-fugu-smock-1",
             altText: "Men's Fugu Smock - Side View",
             isPrimary: false,
@@ -536,85 +553,65 @@ async function main() {
     },
   });
 
-  // Create variant values for the fuguSmock product's size variant
-  const fuguSmockSizeVariant = await prisma.productVariant.findFirst({
-    where: {
-      name: "Size",
-      productId: fuguSmock.id,
-    },
+  // Create fuguSmock Variant Values (Size, Color)
+  const sizeVariantFugu = await prisma.productVariant.findFirst({
+    where: { name: "Size", productId: fuguSmock.id },
+  });
+  const colorVariantFugu = await prisma.productVariant.findFirst({
+    where: { name: "Color", productId: fuguSmock.id },
   });
 
-  if (fuguSmockSizeVariant) {
+  let sizeValuesFugu: any[] = [];
+  if (sizeVariantFugu) {
     await prisma.productVariantValue.createMany({
       data: [
-        {
-          value: "S",
-          variantId: fuguSmockSizeVariant.id,
-          price: 129.99,
-          quantity: 25,
-          sku: "MFS002-SIZE-S",
-        },
-        {
-          value: "M",
-          variantId: fuguSmockSizeVariant.id,
-          price: 129.99,
-          quantity: 25,
-          sku: "MFS002-SIZE-M",
-        },
-        {
-          value: "L",
-          variantId: fuguSmockSizeVariant.id,
-          price: 129.99,
-          quantity: 25,
-          sku: "MFS002-SIZE-L",
-        },
-        {
-          value: "XL",
-          variantId: fuguSmockSizeVariant.id,
-          price: 129.99,
-          quantity: 25,
-          sku: "MFS002-SIZE-XL",
-        },
+        { value: "S", variantId: sizeVariantFugu.id },
+        { value: "M", variantId: sizeVariantFugu.id },
+        { value: "L", variantId: sizeVariantFugu.id },
+        { value: "XL", variantId: sizeVariantFugu.id },
       ],
     });
+    sizeValuesFugu = await prisma.productVariantValue.findMany({
+      where: { variantId: sizeVariantFugu.id },
+    });
   }
-
-  // Create variant values for the fuguSmock product's color variant
-  const fuguSmockColorVariant = await prisma.productVariant.findFirst({
-    where: {
-      name: "Color",
-      productId: fuguSmock.id,
-    },
-  });
-
-  if (fuguSmockColorVariant) {
+  let colorValuesFugu: any[] = [];
+  if (colorVariantFugu) {
     await prisma.productVariantValue.createMany({
       data: [
         {
           value: "Natural",
           hexCode: "#F5E6D3",
-          variantId: fuguSmockColorVariant.id,
-          price: 129.99,
-          quantity: 25,
-          sku: "MFS002-COLOR-NAT",
+          variantId: colorVariantFugu.id,
         },
-        {
-          value: "Black",
-          hexCode: "#000000",
-          variantId: fuguSmockColorVariant.id,
-          price: 129.99,
-          quantity: 25,
-          sku: "MFS002-COLOR-BLK",
-        },
-        {
-          value: "Brown",
-          hexCode: "#8B4513",
-          variantId: fuguSmockColorVariant.id,
-          price: 129.99,
-          quantity: 25,
-          sku: "MFS002-COLOR-BRN",
-        },
+        { value: "Black", hexCode: "#000000", variantId: colorVariantFugu.id },
+        { value: "Brown", hexCode: "#8B4513", variantId: colorVariantFugu.id },
       ],
+    });
+    colorValuesFugu = await prisma.productVariantValue.findMany({
+      where: { variantId: colorVariantFugu.id },
+    });
+  }
+
+  // Create fuguSmock ProductItems
+  const variantsWithOptionsFugu = [
+    sizeValuesFugu.map((v) => ({ id: v.id, value: v.value, name: "Size" })),
+    colorValuesFugu.map((v) => ({ id: v.id, value: v.value, name: "Color" })),
+  ].filter((arr) => arr.length > 0);
+  const combinationsFugu = generateCombinations(variantsWithOptionsFugu);
+
+  for (const combo of combinationsFugu) {
+    const sku = `MFS002-${combo.map((v) => v.value).join("-")}`;
+    const price = fuguSmock.price ?? 0;
+    const quantity = 15; // Example quantity
+    await prisma.productItem.create({
+      data: {
+        productId: fuguSmock.id,
+        sku: sku,
+        price: price,
+        quantity: quantity,
+        variantValues: { connect: combo.map((v) => ({ id: v.id })) },
+      },
     });
   }
 
@@ -625,6 +622,8 @@ async function main() {
       slug: "womens-ankara-jumpsuit-001",
       description:
         "Modern ankara jumpsuit with bold prints, perfect for making a statement",
+      fullDescription:
+        "This stunning Women's Designer Ankara Jumpsuit features bold, vibrant prints on premium ankara fabric. The modern design includes a fitted bodice, wide-leg pants, and a flattering waistline. Perfect for making a statement at special events, parties, or cultural celebrations. The jumpsuit is lined for comfort and includes a hidden back zipper for easy wear. Made from 100% cotton ankara fabric with a comfortable stretch. Care instructions: Hand wash cold, line dry, iron on low heat. Available in various sizes to ensure the perfect fit.",
       price: 149.99,
       salesPrice: 100.0,
       sku: "WAJ001-MAIN",
@@ -634,16 +633,17 @@ async function main() {
       brandId: brand.id,
       isAvailable: true,
       featured: true,
+      materialType: "Cotton",
       images: {
         create: [
           {
-            link: "ankara-jumpsuit.png",
+            link: "/assets/ankara-jumpsuit.png",
             slug: "ankara-jumpsuit",
             altText: "Women's Ankara Jumpsuit - Front View",
             isPrimary: true,
           },
           {
-            link: "ankara-jumpsuit-1.png",
+            link: "/assets/ankara-jumpsuit-1.png",
             slug: "ankara-jumpsuit-1",
             altText: "Women's Ankara Jumpsuit - Side View",
             isPrimary: false,
@@ -669,44 +669,20 @@ async function main() {
   });
 
   // Create variant values for the ankaraJumpsuit product's size variant
-  const ankaraJumpsuitSizeVariant = await prisma.productVariant.findFirst({
+  const sizeVariantAnkara = await prisma.productVariant.findFirst({
     where: {
       name: "Size",
       productId: ankaraJumpsuit.id,
     },
   });
 
-  if (ankaraJumpsuitSizeVariant) {
+  if (sizeVariantAnkara) {
     await prisma.productVariantValue.createMany({
       data: [
-        {
-          value: "S",
-          variantId: ankaraJumpsuitSizeVariant.id,
-          price: 149.99,
-          quantity: 25,
-          sku: "WAJ001-SIZE-S",
-        },
-        {
-          value: "M",
-          variantId: ankaraJumpsuitSizeVariant.id,
-          price: 149.99,
-          quantity: 25,
-          sku: "WAJ001-SIZE-M",
-        },
-        {
-          value: "L",
-          variantId: ankaraJumpsuitSizeVariant.id,
-          price: 149.99,
-          quantity: 25,
-          sku: "WAJ001-SIZE-L",
-        },
-        {
-          value: "XL",
-          variantId: ankaraJumpsuitSizeVariant.id,
-          price: 149.99,
-          quantity: 25,
-          sku: "WAJ001-SIZE-XL",
-        },
+        { value: "S", variantId: sizeVariantAnkara.id },
+        { value: "M", variantId: sizeVariantAnkara.id },
+        { value: "L", variantId: sizeVariantAnkara.id },
+        { value: "XL", variantId: sizeVariantAnkara.id },
       ],
     });
   }
@@ -718,6 +694,8 @@ async function main() {
       slug: "womens-kente-dress-001",
       description:
         "Elegant kente dress featuring traditional Ghanaian patterns, perfect for formal occasions",
+      fullDescription:
+        "The Women's Traditional Kente Dress is a masterpiece of Ghanaian craftsmanship, featuring authentic kente cloth patterns woven by master weavers. This elegant dress combines traditional design with modern tailoring for a perfect fit. The dress features a fitted bodice, flared skirt, and intricate kente patterns that tell stories of Ghanaian heritage. Made from premium cotton kente fabric with a silk lining for comfort. Perfect for weddings, cultural events, and formal occasions. Care instructions: Dry clean only. Each dress is unique due to the handwoven nature of the kente fabric.",
       price: 199.99,
       salesPrice: 149.99,
       sku: "WKD001-MAIN",
@@ -727,16 +705,17 @@ async function main() {
       brandId: brand.id,
       isAvailable: true,
       featured: true,
+      materialType: "Silk",
       images: {
         create: [
           {
-            link: "kente-dress.png",
+            link: "/assets/kente-dress.png",
             slug: "kente-dress",
             altText: "Women's Kente Dress - Front View",
             isPrimary: true,
           },
           {
-            link: "kente-dress-1.png",
+            link: "/assets/kente-dress-1.png",
             slug: "kente-dress-1",
             altText: "Women's Kente Dress - Back View",
             isPrimary: false,
@@ -765,44 +744,20 @@ async function main() {
   });
 
   // Create variant values for the kenteDress product's size variant
-  const kenteDressSizeVariant = await prisma.productVariant.findFirst({
+  const sizeVariantKenteDress = await prisma.productVariant.findFirst({
     where: {
       name: "Size",
       productId: kenteDress.id,
     },
   });
 
-  if (kenteDressSizeVariant) {
+  if (sizeVariantKenteDress) {
     await prisma.productVariantValue.createMany({
       data: [
-        {
-          value: "S",
-          variantId: kenteDressSizeVariant.id,
-          price: 199.99,
-          quantity: 25,
-          sku: "WKD001-SIZE-S",
-        },
-        {
-          value: "M",
-          variantId: kenteDressSizeVariant.id,
-          price: 199.99,
-          quantity: 25,
-          sku: "WKD001-SIZE-M",
-        },
-        {
-          value: "L",
-          variantId: kenteDressSizeVariant.id,
-          price: 199.99,
-          quantity: 25,
-          sku: "WKD001-SIZE-L",
-        },
-        {
-          value: "XL",
-          variantId: kenteDressSizeVariant.id,
-          price: 199.99,
-          quantity: 25,
-          sku: "WKD001-SIZE-XL",
-        },
+        { value: "S", variantId: sizeVariantKenteDress.id },
+        { value: "M", variantId: sizeVariantKenteDress.id },
+        { value: "L", variantId: sizeVariantKenteDress.id },
+        { value: "XL", variantId: sizeVariantKenteDress.id },
       ],
     });
   }
@@ -813,6 +768,8 @@ async function main() {
       link: "mens-embroidered-dashiki",
       slug: "mens-embroidered-dashiki",
       description: "Hand-embroidered dashiki shirt with intricate patterns",
+      fullDescription:
+        "This premium Men's Embroidered Dashiki is a work of art, featuring intricate hand-embroidery on premium cotton fabric. The dashiki includes traditional African patterns and symbols, each telling a unique story. The loose, comfortable fit makes it perfect for both casual and formal occasions. The shirt features a V-neck design with matching embroidery around the neckline and sleeves. Made from 100% premium cotton for breathability and comfort. Care instructions: Hand wash cold, line dry, iron on low heat. Each piece is unique due to the hand-embroidery process.",
       price: 119.99,
       salesPrice: 99.99,
       sku: "MED001-MAIN",
@@ -822,16 +779,17 @@ async function main() {
       brandId: brand.id,
       isAvailable: true,
       featured: true,
+      materialType: "Cotton",
       images: {
         create: [
           {
-            link: "mens-embroidered-dashiki.png",
+            link: "/assets/mens-embroidered-dashiki.png",
             slug: "mens-embroidered-dashiki",
             altText: "Men's Dashiki - Front View",
             isPrimary: true,
           },
           {
-            link: "mens-embroidered-dashiki-1.png",
+            link: "/assets/mens-embroidered-dashiki-1.png",
             slug: "mens-embroidered-dashiki-1",
             altText: "Men's Dashiki - Back View",
             isPrimary: false,
@@ -865,82 +823,49 @@ async function main() {
   });
 
   // Create variant values for the mensDashiki product's size variant
-  const mensDashikiSizeVariant = await prisma.productVariant.findFirst({
+  const sizeVariantDashiki = await prisma.productVariant.findFirst({
     where: {
       name: "Size",
       productId: mensDashiki.id,
     },
   });
 
-  if (mensDashikiSizeVariant) {
+  if (sizeVariantDashiki) {
     await prisma.productVariantValue.createMany({
       data: [
-        {
-          value: "S",
-          variantId: mensDashikiSizeVariant.id,
-          price: 119.99,
-          quantity: 25,
-          sku: "MED001-SIZE-S",
-        },
-        {
-          value: "M",
-          variantId: mensDashikiSizeVariant.id,
-          price: 119.99,
-          quantity: 25,
-          sku: "MED001-SIZE-M",
-        },
-        {
-          value: "L",
-          variantId: mensDashikiSizeVariant.id,
-          price: 119.99,
-          quantity: 25,
-          sku: "MED001-SIZE-L",
-        },
-        {
-          value: "XL",
-          variantId: mensDashikiSizeVariant.id,
-          price: 119.99,
-          quantity: 25,
-          sku: "MED001-SIZE-XL",
-        },
+        { value: "S", variantId: sizeVariantDashiki.id },
+        { value: "M", variantId: sizeVariantDashiki.id },
+        { value: "L", variantId: sizeVariantDashiki.id },
+        { value: "XL", variantId: sizeVariantDashiki.id },
       ],
     });
   }
 
   // Create variant values for the mensDashiki product's color variant
-  const mensDashikiColorVariant = await prisma.productVariant.findFirst({
+  const colorVariantDashiki = await prisma.productVariant.findFirst({
     where: {
       name: "Color",
       productId: mensDashiki.id,
     },
   });
 
-  if (mensDashikiColorVariant) {
+  if (colorVariantDashiki) {
     await prisma.productVariantValue.createMany({
       data: [
         {
           value: "White",
           hexCode: "#FFFFFF",
-          variantId: mensDashikiColorVariant.id,
-          price: 119.99,
-          quantity: 25,
-          sku: "MED001-COLOR-WHT",
+          variantId: colorVariantDashiki.id,
         },
         {
           value: "Blue",
           hexCode: "#0000FF",
-          variantId: mensDashikiColorVariant.id,
-          price: 119.99,
-          quantity: 25,
-          sku: "MED001-COLOR-BLU",
+          variantId: colorVariantDashiki.id,
         },
         {
           value: "Gold",
           hexCode: "#FFD700",
-          variantId: mensDashikiColorVariant.id,
-          price: 119.99,
-          quantity: 25,
-          sku: "MED001-COLOR-GLD",
+          variantId: colorVariantDashiki.id,
         },
       ],
     });
@@ -952,6 +877,8 @@ async function main() {
       link: "womens-ankara-corset",
       slug: "womens-ankara-corset",
       description: "Modern ankara corset top with traditional prints",
+      fullDescription:
+        "The Women's Ankara Corset Top combines traditional African prints with modern corset styling. Made from premium ankara fabric, this top features a structured bodice with boning for support and a flattering silhouette. The vibrant patterns and colors make it perfect for both casual and formal occasions. The top includes adjustable lacing at the back for a custom fit. Made from 100% cotton ankara fabric with a comfortable stretch. Care instructions: Hand wash cold, line dry, iron on low heat. Available in various sizes to ensure the perfect fit.",
       price: 79.99,
       salesPrice: 49.99,
       sku: "WAC001-MAIN",
@@ -961,16 +888,17 @@ async function main() {
       brandId: brand.id,
       isAvailable: true,
       featured: true,
+      materialType: "Cotton",
       images: {
         create: [
           {
-            link: "womens-corset-top.png",
+            link: "/assets/womens-corset-top.png",
             slug: "womens-corset-top",
             altText: "Women's Corset - Front View",
             isPrimary: true,
           },
           {
-            link: "womens-corset-top-1.png",
+            link: "/assets/womens-corset-top-1.png",
             slug: "womens-corset-top-1",
             altText: "Women's Corset - Back View",
             isPrimary: false,
@@ -999,44 +927,20 @@ async function main() {
   });
 
   // Create variant values for the womensCorset product's size variant
-  const womensCorsetSizeVariant = await prisma.productVariant.findFirst({
+  const sizeVariantCorset = await prisma.productVariant.findFirst({
     where: {
       name: "Size",
       productId: womensCorset.id,
     },
   });
 
-  if (womensCorsetSizeVariant) {
+  if (sizeVariantCorset) {
     await prisma.productVariantValue.createMany({
       data: [
-        {
-          value: "S",
-          variantId: womensCorsetSizeVariant.id,
-          price: 79.99,
-          quantity: 25,
-          sku: "WAC001-SIZE-S",
-        },
-        {
-          value: "M",
-          variantId: womensCorsetSizeVariant.id,
-          price: 79.99,
-          quantity: 25,
-          sku: "WAC001-SIZE-M",
-        },
-        {
-          value: "L",
-          variantId: womensCorsetSizeVariant.id,
-          price: 79.99,
-          quantity: 25,
-          sku: "WAC001-SIZE-L",
-        },
-        {
-          value: "XL",
-          variantId: womensCorsetSizeVariant.id,
-          price: 79.99,
-          quantity: 25,
-          sku: "WAC001-SIZE-XL",
-        },
+        { value: "S", variantId: sizeVariantCorset.id },
+        { value: "M", variantId: sizeVariantCorset.id },
+        { value: "L", variantId: sizeVariantCorset.id },
+        { value: "XL", variantId: sizeVariantCorset.id },
       ],
     });
   }
@@ -1047,6 +951,8 @@ async function main() {
       link: "mens-ankara-suit",
       slug: "mens-ankara-suit",
       description: "Contemporary two-piece ankara suit with modern cut",
+      fullDescription:
+        "This sophisticated Men's Ankara Suit features a contemporary two-piece design with modern tailoring. Made from premium ankara fabric, the suit includes a fitted jacket with notched lapels and matching trousers. The vibrant patterns and colors make it perfect for weddings, cultural events, and formal occasions. The suit is fully lined for comfort and includes functional pockets. Made from 100% cotton ankara fabric. Care instructions: Dry clean only. Available in various sizes to ensure the perfect fit.",
       price: 299.99,
       sku: "MAS001-MAIN",
       status: "PUBLISHED",
@@ -1055,16 +961,17 @@ async function main() {
       brandId: brand.id,
       isAvailable: true,
       featured: false,
+      materialType: "Cotton",
       images: {
         create: [
           {
-            link: "mens-ankara-suit.png",
+            link: "/assets/mens-ankara-suit.png",
             slug: "mens-ankara-suit",
             altText: "Men's Suit - Front View",
             isPrimary: true,
           },
           {
-            link: "mens-ankara-suit-1.png",
+            link: "/assets/mens-ankara-suit-1.png",
             slug: "mens-ankara-suit-1",
             altText: "Men's Suit - Side View",
             isPrimary: false,
@@ -1093,44 +1000,20 @@ async function main() {
   });
 
   // Create variant values for the mensAnkaraSuit product's size variant
-  const mensAnkaraSuitSizeVariant = await prisma.productVariant.findFirst({
+  const sizeVariantSuit = await prisma.productVariant.findFirst({
     where: {
       name: "Size",
       productId: mensAnkaraSuit.id,
     },
   });
 
-  if (mensAnkaraSuitSizeVariant) {
+  if (sizeVariantSuit) {
     await prisma.productVariantValue.createMany({
       data: [
-        {
-          value: "S",
-          variantId: mensAnkaraSuitSizeVariant.id,
-          price: 299.99,
-          quantity: 25,
-          sku: "MAS001-SIZE-S",
-        },
-        {
-          value: "M",
-          variantId: mensAnkaraSuitSizeVariant.id,
-          price: 299.99,
-          quantity: 25,
-          sku: "MAS001-SIZE-M",
-        },
-        {
-          value: "L",
-          variantId: mensAnkaraSuitSizeVariant.id,
-          price: 299.99,
-          quantity: 25,
-          sku: "MAS001-SIZE-L",
-        },
-        {
-          value: "XL",
-          variantId: mensAnkaraSuitSizeVariant.id,
-          price: 299.99,
-          quantity: 25,
-          sku: "MAS001-SIZE-XL",
-        },
+        { value: "S", variantId: sizeVariantSuit.id },
+        { value: "M", variantId: sizeVariantSuit.id },
+        { value: "L", variantId: sizeVariantSuit.id },
+        { value: "XL", variantId: sizeVariantSuit.id },
       ],
     });
   }
@@ -1141,6 +1024,8 @@ async function main() {
       link: "womens-kente-straight-dress",
       slug: "womens-kente-straight-dress",
       description: "Sophisticated straight-cut dress with kente accents",
+      fullDescription:
+        "The Women's Kente Straight Dress features a sophisticated straight-cut design with authentic kente cloth accents. Made from premium cotton fabric with kente detailing, this dress offers a modern silhouette while celebrating traditional Ghanaian craftsmanship. The dress includes a fitted bodice, straight skirt, and kente trim at the neckline and hem. Perfect for formal occasions, cultural events, and special celebrations. Made from 100% cotton with a silk lining for comfort. Care instructions: Dry clean only. Each dress is unique due to the handwoven kente accents.",
       price: 169.99,
       salesPrice: 149.99,
       sku: "WKS001-MAIN",
@@ -1150,16 +1035,17 @@ async function main() {
       brandId: brand.id,
       isAvailable: true,
       featured: true,
+      materialType: "Cotton",
       images: {
         create: [
           {
-            link: "kente-straight-dress.jpg",
+            link: "/assets/kente-straight-dress.jpg",
             slug: "kente-straight-dress",
             altText: "Women's Straight Dress - Front View",
             isPrimary: true,
           },
           {
-            link: "kente-straight-dress-1.png",
+            link: "/assets/kente-straight-dress-1.png",
             slug: "kente-straight-dress-1",
             altText: "Women's Straight Dress - Back View",
             isPrimary: false,
@@ -1188,44 +1074,20 @@ async function main() {
   });
 
   // Create variant values for the womensStraightDress product's size variant
-  const womensStraightDressSizeVariant = await prisma.productVariant.findFirst({
+  const sizeVariantStraightDress = await prisma.productVariant.findFirst({
     where: {
       name: "Size",
       productId: womensStraightDress.id,
     },
   });
 
-  if (womensStraightDressSizeVariant) {
+  if (sizeVariantStraightDress) {
     await prisma.productVariantValue.createMany({
       data: [
-        {
-          value: "S",
-          variantId: womensStraightDressSizeVariant.id,
-          price: 169.99,
-          quantity: 25,
-          sku: "WKS001-SIZE-S",
-        },
-        {
-          value: "M",
-          variantId: womensStraightDressSizeVariant.id,
-          price: 169.99,
-          quantity: 25,
-          sku: "WKS001-SIZE-M",
-        },
-        {
-          value: "L",
-          variantId: womensStraightDressSizeVariant.id,
-          price: 169.99,
-          quantity: 25,
-          sku: "WKS001-SIZE-L",
-        },
-        {
-          value: "XL",
-          variantId: womensStraightDressSizeVariant.id,
-          price: 169.99,
-          quantity: 25,
-          sku: "WKS001-SIZE-XL",
-        },
+        { value: "S", variantId: sizeVariantStraightDress.id },
+        { value: "M", variantId: sizeVariantStraightDress.id },
+        { value: "L", variantId: sizeVariantStraightDress.id },
+        { value: "XL", variantId: sizeVariantStraightDress.id },
       ],
     });
   }
@@ -1236,6 +1098,8 @@ async function main() {
       link: "mens-kaftan-set",
       slug: "mens-kaftan-set",
       description: "Luxurious two-piece kaftan set with gold embroidery",
+      fullDescription:
+        "This luxurious Men's Embroidered Kaftan Set features a two-piece design with intricate gold embroidery. Made from premium cotton fabric, the set includes a long kaftan with matching trousers. The embroidery features traditional African patterns and symbols, each telling a unique story. The loose, comfortable fit makes it perfect for both casual and formal occasions. The set is fully lined for comfort and includes a matching belt. Made from 100% premium cotton. Care instructions: Hand wash cold, line dry, iron on low heat. Each piece is unique due to the hand-embroidery process.",
       price: 189.99,
       salesPrice: 169.99,
       sku: "MKS002-MAIN",
@@ -1245,16 +1109,17 @@ async function main() {
       brandId: brand.id,
       isAvailable: true,
       featured: true,
+      materialType: "Cotton",
       images: {
         create: [
           {
-            link: "mens-kaftan.png",
+            link: "/assets/mens-kaftan.png",
             slug: "mens-kaftan",
             altText: "Men's Kaftan Set - Front View",
             isPrimary: true,
           },
           {
-            link: "mens-kaftan-1.png",
+            link: "/assets/mens-kaftan-1.png",
             slug: "mens-kaftan-1",
             altText: "Men's Kaftan Set - Side View",
             isPrimary: false,
@@ -1283,44 +1148,20 @@ async function main() {
   });
 
   // Create variant values for the mensKaftanSet product's size variant
-  const mensKaftanSetSizeVariant = await prisma.productVariant.findFirst({
+  const sizeVariantKaftan = await prisma.productVariant.findFirst({
     where: {
       name: "Size",
       productId: mensKaftanSet.id,
     },
   });
 
-  if (mensKaftanSetSizeVariant) {
+  if (sizeVariantKaftan) {
     await prisma.productVariantValue.createMany({
       data: [
-        {
-          value: "S",
-          variantId: mensKaftanSetSizeVariant.id,
-          price: 189.99,
-          quantity: 25,
-          sku: "MKS002-SIZE-S",
-        },
-        {
-          value: "M",
-          variantId: mensKaftanSetSizeVariant.id,
-          price: 189.99,
-          quantity: 25,
-          sku: "MKS002-SIZE-M",
-        },
-        {
-          value: "L",
-          variantId: mensKaftanSetSizeVariant.id,
-          price: 189.99,
-          quantity: 25,
-          sku: "MKS002-SIZE-L",
-        },
-        {
-          value: "XL",
-          variantId: mensKaftanSetSizeVariant.id,
-          price: 189.99,
-          quantity: 25,
-          sku: "MKS002-SIZE-XL",
-        },
+        { value: "S", variantId: sizeVariantKaftan.id },
+        { value: "M", variantId: sizeVariantKaftan.id },
+        { value: "L", variantId: sizeVariantKaftan.id },
+        { value: "XL", variantId: sizeVariantKaftan.id },
       ],
     });
   }
@@ -1331,6 +1172,8 @@ async function main() {
       link: "womens-ankara-peplum",
       slug: "womens-ankara-peplum",
       description: "Stylish peplum blouse with vibrant ankara prints",
+      fullDescription:
+        "The Women's Ankara Peplum Blouse features a stylish peplum design with vibrant ankara prints. Made from premium ankara fabric, this blouse includes a fitted bodice with a flared peplum hem. The vibrant patterns and colors make it perfect for both casual and formal occasions. The blouse features a round neckline and short sleeves for a modern look. Made from 100% cotton ankara fabric with a comfortable stretch. Care instructions: Hand wash cold, line dry, iron on low heat. Available in various sizes to ensure the perfect fit.",
       price: 89.99,
       salesPrice: 69.99,
       sku: "WAP001-MAIN",
@@ -1340,16 +1183,17 @@ async function main() {
       brandId: brand.id,
       isAvailable: true,
       featured: true,
+      materialType: "Cotton",
       images: {
         create: [
           {
-            link: "peplum-blouse.png",
+            link: "/assets/peplum-blouse.png",
             slug: "peplum-blouse",
             altText: "Women's Peplum Blouse - Front View",
             isPrimary: true,
           },
           {
-            link: "peplum-blouse-1.png",
+            link: "/assets/peplum-blouse-1.png",
             slug: "peplum-blouse-1",
             altText: "Women's Peplum Blouse - Back View",
             isPrimary: false,
@@ -1378,44 +1222,20 @@ async function main() {
   });
 
   // Create variant values for the womensAnkaraBlouse product's size variant
-  const womensAnkaraBlouseSizeVariant = await prisma.productVariant.findFirst({
+  const sizeVariantBlouse = await prisma.productVariant.findFirst({
     where: {
       name: "Size",
       productId: womensAnkaraBlouse.id,
     },
   });
 
-  if (womensAnkaraBlouseSizeVariant) {
+  if (sizeVariantBlouse) {
     await prisma.productVariantValue.createMany({
       data: [
-        {
-          value: "S",
-          variantId: womensAnkaraBlouseSizeVariant.id,
-          price: 89.99,
-          quantity: 25,
-          sku: "WAP001-SIZE-S",
-        },
-        {
-          value: "M",
-          variantId: womensAnkaraBlouseSizeVariant.id,
-          price: 89.99,
-          quantity: 25,
-          sku: "WAP001-SIZE-M",
-        },
-        {
-          value: "L",
-          variantId: womensAnkaraBlouseSizeVariant.id,
-          price: 89.99,
-          quantity: 25,
-          sku: "WAP001-SIZE-L",
-        },
-        {
-          value: "XL",
-          variantId: womensAnkaraBlouseSizeVariant.id,
-          price: 89.99,
-          quantity: 25,
-          sku: "WAP001-SIZE-XL",
-        },
+        { value: "S", variantId: sizeVariantBlouse.id },
+        { value: "M", variantId: sizeVariantBlouse.id },
+        { value: "L", variantId: sizeVariantBlouse.id },
+        { value: "XL", variantId: sizeVariantBlouse.id },
       ],
     });
   }

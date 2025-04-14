@@ -1,7 +1,19 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
-import { ProductReview, ProductVariant } from "@prisma/client";
+import { Prisma, ProductReview, ProductVariant } from "@prisma/client";
 import { Product } from "@/types";
+
+interface ProductItemType {
+  quantity: number;
+  price: Prisma.Decimal;
+  sku: string;
+  variantValues: Array<{
+    variant: {
+      name: string;
+    };
+    value: string;
+  }>;
+}
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -102,4 +114,106 @@ export const getDiscountRate = (
 ): number => {
   const d = (price - discountPrice) * (100 / price);
   return parseFloat(d.toFixed(2));
+};
+
+/**
+ * Checks if a specific variant combination is available in the product items
+ * @param product The product containing variant items
+ * @param currentVariantName The name of the variant being checked
+ * @param currentOptionValue The value of the option being checked
+ * @param selectedVariants The currently selected variants
+ * @returns Boolean indicating if the combination is available
+ */
+export const isCombinationAvailable = (
+  product: any,
+  currentVariantName: string,
+  currentOptionValue: string,
+  selectedVariants: Record<string, string>,
+): boolean => {
+  if (!product.productItems) return false; // No items defined
+
+  // Build the potential full combination including the current option
+  const potentialSelection = {
+    ...selectedVariants,
+    [currentVariantName]: currentOptionValue,
+  };
+
+  // Check if *any* ProductItem matches this potential selection AND has quantity > 0
+  return product.productItems.some((item: any) => {
+    if (item.quantity <= 0) return false; // Item itself is out of stock
+
+    // Check if this item perfectly matches the potential selection
+    let matches = true;
+    const requiredVariantNames =
+      product.variants?.map((v: any) => v.name) ?? [];
+
+    // Ensure item has values for all required variants
+    if (item.variantValues.length !== requiredVariantNames.length) {
+      return false;
+    }
+
+    for (const requiredName of requiredVariantNames) {
+      const selectedValueForCheck = potentialSelection[requiredName];
+      // If a required variant isn't in the potential selection yet, we can't determine availability accurately here
+      if (!selectedValueForCheck) {
+        matches = false;
+        break;
+      }
+      const itemHasValue = item.variantValues.some(
+        (vv: any) =>
+          vv.variant.name === requiredName &&
+          vv.value === selectedValueForCheck,
+      );
+      if (!itemHasValue) {
+        matches = false;
+        break;
+      }
+    }
+    return matches;
+  });
+};
+
+export const findSelectedItemDetails = (
+  product: Product | null | undefined,
+  selectedVariants: Record<string, string>,
+): ProductItemType | null => {
+  if (!product?.productItems || Object.keys(selectedVariants).length === 0) {
+    return null; // No items or no selections made
+  }
+
+  // Check if all required variant types have a selection
+  const requiredVariantNames = product.variants?.map((v) => v.name) ?? [];
+  const allRequiredSelected = requiredVariantNames.every(
+    (name) => selectedVariants[name],
+  );
+
+  if (!allRequiredSelected || requiredVariantNames.length === 0) {
+    return null; // Not all variants selected yet, or product has no variants defined
+  }
+
+  for (const item of product.productItems) {
+    // Check if this item's values perfectly match the selection
+    let match = true;
+    if (item.variantValues.length !== requiredVariantNames.length) {
+      match = false; // Item doesn't have the right number of variants defined
+      continue;
+    }
+
+    for (const requiredName of requiredVariantNames) {
+      const selectedValue = selectedVariants[requiredName];
+      const itemHasValueForVariant = item.variantValues.some(
+        (vv) => vv.variant.name === requiredName && vv.value === selectedValue,
+      );
+      if (!itemHasValueForVariant) {
+        match = false;
+        break; // This item doesn't match the selection
+      }
+    }
+
+    if (match) {
+      return item; // Found the matching item
+    }
+  }
+
+  return null; // No item found for the exact combination
 };

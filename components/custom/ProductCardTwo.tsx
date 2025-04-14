@@ -18,17 +18,17 @@ const ProductCardTwo = ({ item }: { item: Product }) => {
   const router = useRouter();
 
   return (
-    <Card className="w-[650px] max-h-[400px] overflow-hidden grid grid-cols-2">
+    <Card className="w-[650px] max-h-[400px] overflow-hidden grid grid-cols-2 mb-6 ">
       <CardHeader className="group/image relative h-[350px] overflow-hidden p-0">
         <Image
-          src={`/assets/${item.images[1].link}`}
+          src={item.images[1].link}
           alt={item.images[1].altText ?? item.name}
           width="400"
           height="400"
           className="absolute inset-0 object-cover duration-300 ease-linear group-hover/image:translate-x-full"
         />
         <Image
-          src={`/assets/${item.images[0].link}`}
+          src={item.images[0].link}
           alt={item.images[0].altText ?? item.name}
           width="350"
           height="350"

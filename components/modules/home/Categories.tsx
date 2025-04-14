@@ -72,7 +72,7 @@ const Categories = () => {
                 key={item.id}
                 className="relative [&>button]:block hover:scale-105 duration-300 ease-linear cursor-pointer rounded-md "
                 style={{
-                  backgroundImage: `url(/assets/${item.image})`,
+                  backgroundImage: `url(${item.image})`,
                   height: "600px",
                   width: "auto",
                   backgroundSize: "cover",

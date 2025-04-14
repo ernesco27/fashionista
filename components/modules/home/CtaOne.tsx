@@ -38,9 +38,9 @@ const CtaOne = () => {
         className={`w-full h-[130px] lg:h-[250px] lg:bg-contain lg:bg-repeat    bg-[url(/assets/${
           slideImages?.filter((item: Slides) => item.slug === "cta-home")[0]
             .image
-        })] bg-cover bg-no-repeat bg-top bg-red-600`}
+        })] bg-cover bg-no-repeat bg-top`}
         style={{
-          backgroundImage: `url(/assets/${
+          backgroundImage: `url(${
             slideImages?.filter((item: Slides) => item.slug === "cta-home")[0]
               .image
           })`,

@@ -1,11 +1,14 @@
 import {
   ProductAttribute,
   ProductVariant,
-  ProductReview,
+  ProductReview as PrismaProductReview,
   ProductTag,
   ProductImage,
   ProductVariantValue,
+  ProductItem as PrismaProductItem,
   Prisma,
+  Brand,
+  User,
 } from "@prisma/client";
 
 export type SubCategory = {
@@ -72,15 +75,25 @@ export type Discount = {
   isActive: boolean;
 };
 
-export type ProductVariantValueWithDetails = ProductVariantValue & {
-  hexCode?: string | null;
+export type ProductItemVariantValue = {
+  id: number;
+  value: string;
+  variantId: number;
+  variant: {
+    name: string;
+  };
+};
+
+export type ProductItem = {
+  id: number;
+  sku: string;
   price: Prisma.Decimal;
   quantity: number;
-  sku: string;
+  variantValues: ProductItemVariantValue[];
 };
 
 export type ProductVariantWithValues = ProductVariant & {
-  values?: ProductVariantValueWithDetails[];
+  values?: (ProductVariantValue & { hexCode?: string | null })[];
 };
 
 export type Product = {
@@ -96,6 +109,7 @@ export type Product = {
   subcategoryId: number;
   categoryId: number;
   brandId: number;
+  brand: Brand;
   isAvailable: boolean;
   featured: boolean;
   createdAt?: Date;
@@ -108,6 +122,9 @@ export type Product = {
   reviews?: ProductReview[];
   tags?: ProductTag[];
   attributes?: ProductAttribute[];
+  productItems?: ProductItem[];
+  user?: User;
+  materialType?: string;
 };
 
 export type CartItem = {
@@ -130,4 +147,11 @@ export type Slides = {
   btn: string;
   textColor: string;
   subTitle: string;
+};
+
+export type ProductReview = PrismaProductReview & {
+  user: {
+    firstName: string;
+    lastName: string;
+  };
 };
