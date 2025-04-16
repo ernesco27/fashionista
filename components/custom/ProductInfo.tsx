@@ -35,7 +35,9 @@ const ProductInfo = ({ product }: { product: Product }) => {
             <TabsContent value="description" className="lg:px-10">
               <div>
                 <p className="font-normal text-lg">
-                  {product.description ? product.description : ""}
+                  {product.fullDescription
+                    ? product.fullDescription
+                    : product.description}
                 </p>
               </div>
             </TabsContent>
@@ -57,7 +59,9 @@ const ProductInfo = ({ product }: { product: Product }) => {
                       <TableCell className="font-medium text-lg">
                         Material
                       </TableCell>
-                      <TableCell className="text-lg">Cotton</TableCell>
+                      <TableCell className="text-lg">
+                        {product?.materialType}
+                      </TableCell>
                     </TableRow>
                     {product.variants &&
                       product.variants.length > 0 &&

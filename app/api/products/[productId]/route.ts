@@ -54,6 +54,7 @@ export async function GET(
                 firstName: true,
                 lastName: true,
                 photo: true,
+                emailVerified: true,
               },
             },
           },

@@ -102,6 +102,7 @@ export type Product = {
   link: string;
   slug: string;
   description: string;
+  fullDescription?: string;
   price: Prisma.Decimal;
   salesPrice: Prisma.Decimal | null;
   sku: string | null;
@@ -153,5 +154,7 @@ export type ProductReview = PrismaProductReview & {
   user: {
     firstName: string;
     lastName: string;
+    emailVerified: boolean;
+    photo: string;
   };
 };

@@ -136,7 +136,10 @@ const ProductReview = ({ product }: { product: Product }) => {
             <div className="flex items-center justify-between ">
               <div className="flex items-center gap-2">
                 <Avatar>
-                  <AvatarImage src="https://github.com/shadcn.png" />
+                  {review.user.photo && (
+                    <AvatarImage src={review.user?.photo} />
+                  )}
+
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <span className="flex flex-col gap-1">
@@ -144,23 +147,64 @@ const ProductReview = ({ product }: { product: Product }) => {
                     {`${review.user?.firstName} ${review.user?.lastName}`}
                   </p>
                   <p className="text-sm text-gray-500 leading-none">
-                    (verified)
+                    {review.user.emailVerified
+                      ? "(Verified)"
+                      : "(Not Verified)"}
                   </p>
                 </span>
               </div>
               <p className="text-sm lg:text-lg text-gray-500 leading-none">
-                1 month ago
+                {new Date(review.createdAt).toLocaleDateString("en-US", {
+                  month: "long",
+                  day: "numeric",
+                  year: "numeric",
+                })}
               </p>
             </div>
-            <p className="text-[16px] lg:text-lg text-gray-500 leading-tight mt-3">
+            <p className="text-[16px] lg:text-lg text-gray-500 leading-tight mt-4">
               {review.comment}
             </p>
-            <div className="flex items-center gap-2">
-              <Star className=" text-primary-300 w-6 h-6" />
-              <Star className="outline-none text-primary-300 w-6 h-6" />
-              <Star className="outline-none text-primary-300 w-6 h-6" />
-              <Star className="outline-none text-primary-300 w-6 h-6" />
+            <div className="flex gap-4 items-center mt-4">
+              {review.rating === 5 && (
+                <div className="flex items-center gap-2">
+                  <Star className=" text-primary-300 w-5 h-5 " />
+                  <Star className="outline-none text-primary-300 w-5 h-5" />
+                  <Star className="outline-none text-primary-300 w-5 h-5" />
+                  <Star className="outline-none text-primary-300 w-5 h-5" />
+                  <Star className="outline-none text-primary-300 w-5 h-5" />
+                </div>
+              )}
+              {review.rating >= 4 && review.rating < 5 && (
+                <div className="flex items-center gap-2">
+                  <Star className=" text-primary-300 w-5 h-5 " />
+                  <Star className="outline-none text-primary-300 w-5 h-5" />
+                  <Star className="outline-none text-primary-300 w-5 h-5" />
+                  <Star className="outline-none text-primary-300 w-5 h-5" />
+                </div>
+              )}
+              {review.rating === 3 && (
+                <div className="flex items-center gap-2">
+                  <Star className=" text-primary-300 w-5 h-5 " />
+                  <Star className="outline-none text-primary-300 w-5 h-5" />
+                  <Star className="outline-none text-primary-300 w-5 h-5" />
+                </div>
+              )}
+              {review.rating === 2 && (
+                <div className="flex items-center gap-2">
+                  <Star className=" text-primary-300 w-5 h-5 " />
+                  <Star className="outline-none text-primary-300 w-5 h-5" />
+                </div>
+              )}
+              {review.rating === 1 && (
+                <div className="flex items-center gap-2">
+                  <Star className=" text-primary-300 w-5 h-5 " />
+                </div>
+              )}
+              <p className="text-sm lg:text-lg text-gray-500 leading-none">
+                {review.rating} out of 5
+              </p>
             </div>
+            <Separator className="mt-6" />
           </div>
         ))}
       </div>
