@@ -22,19 +22,22 @@ const ProductInfo = ({ product }: { product: Product }) => {
         <div className="w-full ">
           <Tabs defaultValue="description" className="w-full">
             <TabsList className="flex justify-center">
-              <TabsTrigger className="text-lg" value="description">
+              <TabsTrigger className="text-lg lg:text-2xl" value="description">
                 Description
               </TabsTrigger>
-              <TabsTrigger className="text-lg" value="additional-info">
+              <TabsTrigger
+                className="text-lg lg:text-2xl"
+                value="additional-info"
+              >
                 Additional Information
               </TabsTrigger>
-              <TabsTrigger className="text-lg" value="review">
+              <TabsTrigger className="text-lg lg:text-2xl" value="review">
                 Review
               </TabsTrigger>
             </TabsList>
             <TabsContent value="description" className="lg:px-10">
               <div>
-                <p className="font-normal text-lg">
+                <p className="font-normal text-lg lg:text-xl">
                   {product.fullDescription
                     ? product.fullDescription
                     : product.description}
@@ -46,20 +49,20 @@ const ProductInfo = ({ product }: { product: Product }) => {
                 <Table>
                   <TableHeader className="bg-primary-300">
                     <TableRow>
-                      <TableHead className="w-[190px] text-black text-lg">
+                      <TableHead className="w-[190px] text-black text-lg lg:text-xl">
                         Feature
                       </TableHead>
-                      <TableHead className="text-black text-lg">
+                      <TableHead className="text-black text-lg lg:text-xl">
                         Description
                       </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
                     <TableRow>
-                      <TableCell className="font-medium text-lg">
+                      <TableCell className="font-medium text-lg lg:text-xl">
                         Material
                       </TableCell>
-                      <TableCell className="text-lg">
+                      <TableCell className="text-lg lg:text-xl">
                         {product?.materialType}
                       </TableCell>
                     </TableRow>
@@ -67,12 +70,15 @@ const ProductInfo = ({ product }: { product: Product }) => {
                       product.variants.length > 0 &&
                       product.variants.map((variant) => (
                         <TableRow key={variant.id}>
-                          <TableCell className="font-medium text-lg">
+                          <TableCell className="font-medium text-lg lg:text-xl">
                             {variant.name}
                           </TableCell>
                           <TableCell>
                             {variant.values?.map((value, index) => (
-                              <span className=" text-lg" key={value.id}>
+                              <span
+                                className=" text-lg lg:text-xl"
+                                key={value.id}
+                              >
                                 {value.value}
                                 {index < (variant.values?.length || 0) - 1
                                   ? ", "
@@ -84,16 +90,18 @@ const ProductInfo = ({ product }: { product: Product }) => {
                       ))}
 
                     <TableRow>
-                      <TableCell className="font-medium text-lg">
+                      <TableCell className="font-medium text-lg lg:text-xl">
                         Country of Origin
                       </TableCell>
-                      <TableCell className="text-lg">Ghana</TableCell>
+                      <TableCell className="text-lg lg:text-xl">
+                        Ghana
+                      </TableCell>
                     </TableRow>
                     <TableRow>
-                      <TableCell className="font-medium text-lg">
+                      <TableCell className="font-medium text-lg lg:text-xl">
                         Brand
                       </TableCell>
-                      <TableCell className="text-lg">
+                      <TableCell className="text-lg lg:text-xl">
                         {product.brand?.name}
                       </TableCell>
                     </TableRow>

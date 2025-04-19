@@ -18,6 +18,8 @@ const MainMenu = () => {
 
   const router = useRouter();
 
+  console.log("categoryData", categoryData);
+
   return (
     <section className="hidden lg:flex z-9 relative">
       <ul className="flex justify-between items-center gap-32 ">

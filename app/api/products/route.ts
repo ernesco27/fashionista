@@ -39,6 +39,13 @@ export async function GET() {
           rating: true,
           comment: true,
           createdAt: true,
+          images: {
+            select: {
+              id: true,
+              link: true,
+              slug: true,
+            },
+          },
           user: {
             select: {
               id: true,

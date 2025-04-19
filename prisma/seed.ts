@@ -382,6 +382,18 @@ async function main() {
           rating: 5,
           comment: "Excellent quality and perfect fit!",
           userId: "user_2HNYXXXXXXXXXXX",
+          images: {
+            create: [
+              {
+                link: "/assets/kente-print-shirt.jpg",
+                slug: "kente-print-shirt",
+              },
+              {
+                link: "/assets/kente-print-shirt-1.jpg",
+                slug: "kente-print-shirt-1",
+              },
+            ],
+          },
         },
       ],
     },

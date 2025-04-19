@@ -9,6 +9,7 @@ import {
   Prisma,
   Brand,
   User,
+  ProductReviewImage,
 } from "@prisma/client";
 
 export type SubCategory = {
@@ -156,5 +157,6 @@ export type ProductReview = PrismaProductReview & {
     lastName: string;
     emailVerified: boolean;
     photo: string;
+    images: ProductReviewImage[];
   };
 };
