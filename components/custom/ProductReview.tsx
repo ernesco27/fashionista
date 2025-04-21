@@ -17,6 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 import Image from "next/image";
 import Zoom from "react-medium-image-zoom";
 import ReviewForm from "../forms/ReviewForm";
+import { cn } from "@/lib/utils";
 
 interface Review {
   rating: number;
@@ -32,7 +33,8 @@ interface Review {
     emailVerified: boolean;
     photo?: string;
   };
-  comment: string | null;
+  reviewDetails: string | null;
+  reviewTitle: string | null;
   createdAt: Date;
 }
 
@@ -66,46 +68,28 @@ const ProductReview = ({ product }: { product: Product }) => {
                 </p>
                 <p className="text-lg font-normal">out of 5</p>
               </span>
-              {product.reviews?.map((review) => (
-                <div key={review.id}>
-                  {review.rating === 5 && (
-                    <div className="flex items-center gap-2">
-                      <Star className=" text-primary-300 w-6 h-6" />
-                      <Star className="outline-none text-primary-300 w-6 h-6" />
-                      <Star className="outline-none text-primary-300 w-6 h-6" />
-                      <Star className="outline-none text-primary-300 w-6 h-6" />
-                      <Star className="outline-none text-primary-300 w-6 h-6" />
-                    </div>
-                  )}
-                  {review.rating >= 4 && review.rating < 5 && (
-                    <div className="flex items-center gap-2">
-                      <Star className=" text-primary-300 w-6 h-6" />
-                      <Star className="outline-none text-primary-300 w-6 h-6" />
-                      <Star className="outline-none text-primary-300 w-6 h-6" />
-                      <Star className="outline-none text-primary-300 w-6 h-6" />
-                    </div>
-                  )}
-                  {review.rating >= 3 && review.rating < 4 && (
-                    <div className="flex items-center gap-2">
-                      <Star className=" text-primary-300 w-6 h-6" />
-                      <Star className="outline-none text-primary-300 w-6 h-6" />
-                      <Star className="outline-none text-primary-300 w-6 h-6" />
-                    </div>
-                  )}
-                  {review.rating >= 2 && review.rating < 3 && (
-                    <div className="flex items-center gap-2">
-                      <Star className=" text-primary-300 w-6 h-6" />
-                      <Star className="outline-none text-primary-300 w-6 h-6" />
-                    </div>
-                  )}
-                  {review.rating >= 1 && review.rating < 2 && (
-                    <div className="flex items-center gap-2">
-                      <Star className=" text-primary-300 w-6 h-6" />
-                    </div>
-                  )}
-                </div>
-              ))}
-
+              <div className="flex items-center gap-2">
+                {[1, 2, 3, 4, 5].map((star) => {
+                  const averageRating =
+                    product.reviews && product.reviews.length > 0
+                      ? product.reviews.reduce(
+                          (sum, review) => sum + review.rating,
+                          0,
+                        ) / product.reviews.length
+                      : 0;
+                  return (
+                    <Star
+                      key={star}
+                      className={cn(
+                        "w-6 h-6",
+                        star <= averageRating
+                          ? "text-primary-300 fill-primary-300"
+                          : "text-gray-300",
+                      )}
+                    />
+                  );
+                })}
+              </div>
               <p className="text-lg font-normal">
                 ( {product.reviews?.length} Reviews)
               </p>
@@ -196,18 +180,22 @@ const ProductReview = ({ product }: { product: Product }) => {
               </div>
             </div>
             {product.reviews?.map((review) => (
-              <div key={review.id}>
+              <div key={review.id} className="mt-6">
                 <div className="flex items-center justify-between ">
-                  <div className="flex items-center gap-2">
-                    <Avatar>
-                      {review.user.photo && (
+                  <div className="flex items-center gap-2  ">
+                    <Avatar className="bg-primary-200 overflow-hidden">
+                      {review.user?.photo ? (
                         <AvatarImage src={review.user?.photo} />
+                      ) : (
+                        <AvatarFallback>
+                          {review.user?.firstName.charAt(0)}
+                          {review.user?.lastName.charAt(0)}
+                        </AvatarFallback>
                       )}
-
-                      <AvatarFallback>CN</AvatarFallback>
                     </Avatar>
+
                     <span className="flex flex-col gap-1">
-                      <p className="font-medium text-sm lg:text-lg leading-none">
+                      <p className="font-medium text-lg lg:text-lg leading-none">
                         {`${review.user?.firstName} ${review.user?.lastName}`}
                       </p>
                       <p className="text-sm text-gray-500 leading-none">
@@ -218,52 +206,33 @@ const ProductReview = ({ product }: { product: Product }) => {
                     </span>
                   </div>
                   <p className="text-sm lg:text-lg text-gray-500 leading-none">
-                    {new Date(review.createdAt).toLocaleDateString("en-US", {
+                    {new Date(review.createdAt).toLocaleDateString("en-GB", {
                       month: "long",
                       day: "numeric",
                       year: "numeric",
                     })}
                   </p>
                 </div>
-                <p className="text-[16px] lg:text-lg text-gray-500 leading-tight mt-4">
-                  {review.comment}
+                <p className="text-[16px] lg:text-lg leading-tight mt-8">
+                  {review.reviewTitle}
+                </p>
+                <p className="text-[16px] lg:text-lg text-gray-500 leading-tight mt-4 font-normal">
+                  {review.reviewDetails}
                 </p>
                 <div className="flex gap-4 items-center mt-4">
-                  {review.rating === 5 && (
-                    <div className="flex items-center gap-2">
-                      <Star className=" text-primary-300 w-5 h-5 " />
-                      <Star className="outline-none text-primary-300 w-5 h-5" />
-                      <Star className="outline-none text-primary-300 w-5 h-5" />
-                      <Star className="outline-none text-primary-300 w-5 h-5" />
-                      <Star className="outline-none text-primary-300 w-5 h-5" />
-                    </div>
-                  )}
-                  {review.rating >= 4 && review.rating < 5 && (
-                    <div className="flex items-center gap-2">
-                      <Star className=" text-primary-300 w-5 h-5 " />
-                      <Star className="outline-none text-primary-300 w-5 h-5" />
-                      <Star className="outline-none text-primary-300 w-5 h-5" />
-                      <Star className="outline-none text-primary-300 w-5 h-5" />
-                    </div>
-                  )}
-                  {review.rating >= 3 && review.rating < 4 && (
-                    <div className="flex items-center gap-2">
-                      <Star className=" text-primary-300 w-5 h-5 " />
-                      <Star className="outline-none text-primary-300 w-5 h-5" />
-                      <Star className="outline-none text-primary-300 w-5 h-5" />
-                    </div>
-                  )}
-                  {review.rating >= 2 && review.rating < 3 && (
-                    <div className="flex items-center gap-2">
-                      <Star className=" text-primary-300 w-5 h-5 " />
-                      <Star className="outline-none text-primary-300 w-5 h-5" />
-                    </div>
-                  )}
-                  {review.rating >= 1 && review.rating < 2 && (
-                    <div className="flex items-center gap-2">
-                      <Star className=" text-primary-300 w-5 h-5 " />
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <Star
+                        key={star}
+                        className={cn(
+                          "w-6 h-6",
+                          star <= review.rating
+                            ? "text-primary-300 fill-primary-300"
+                            : "text-gray-300",
+                        )}
+                      />
+                    ))}
+                  </div>
                   <p className="text-sm lg:text-lg text-gray-500 leading-none">
                     {review.rating} out of 5
                   </p>
@@ -294,13 +263,13 @@ const ProductReview = ({ product }: { product: Product }) => {
           <p className="text-lg font-medium">No reviews yet</p>
         </div>
       )}
-      <Separator className="mt-6" />
+      {/* <Separator className="mt-6" /> */}
       <div className=" flex flex-col gap-4 mt-6">
         <p className="text-lg lg:text-2xl font-medium">Add your review</p>
         <p className="text-sm lg:text-lg text-gray-500">
           Your email address will not be published. Required fields are marked *
         </p>
-        <ReviewForm  />
+        <ReviewForm />
       </div>
     </>
   );

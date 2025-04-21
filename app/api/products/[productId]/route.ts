@@ -45,7 +45,8 @@ export async function GET(
         reviews: {
           select: {
             rating: true,
-            comment: true,
+            reviewTitle: true,
+            reviewDetails: true,
             createdAt: true,
             images: {
               select: {

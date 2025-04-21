@@ -245,7 +245,7 @@ async function main() {
     subPageData.map((subPage) => prisma.subpage.create({ data: subPage })),
   );
 
-  // Create sample users
+  // Create sample users for reviews
   const users = await prisma.user.createMany({
     data: [
       {
@@ -261,6 +261,14 @@ async function main() {
         firstName: "Jane",
         lastName: "Smith",
         email: "jane.smith@example.com",
+        isActive: true,
+        emailVerified: true,
+      },
+      {
+        id: "user_2HNZZZZZZZZZZZZ",
+        firstName: "Mike",
+        lastName: "Johnson",
+        email: "mike.johnson@example.com",
         isActive: true,
         emailVerified: true,
       },
@@ -379,8 +387,10 @@ async function main() {
     reviews: {
       create: [
         {
+          reviewTitle: "Excellent Quality and Perfect Fit",
           rating: 5,
-          comment: "Excellent quality and perfect fit!",
+          reviewDetails:
+            "The kente print shirt is absolutely stunning! The quality of the fabric is excellent and the fit is perfect. The traditional patterns are vibrant and well-made. I've received many compliments while wearing it.",
           userId: "user_2HNYXXXXXXXXXXX",
           images: {
             create: [
@@ -388,12 +398,15 @@ async function main() {
                 link: "/assets/kente-print-shirt.jpg",
                 slug: "kente-print-shirt",
               },
-              {
-                link: "/assets/kente-print-shirt-1.jpg",
-                slug: "kente-print-shirt-1",
-              },
             ],
           },
+        },
+        {
+          reviewTitle: "Beautiful Traditional Design",
+          rating: 4,
+          reviewDetails:
+            "I love the traditional kente patterns on this shirt. The colors are vibrant and the material is comfortable. The only reason I'm giving it 4 stars is because the sleeves were slightly longer than expected, but that's a minor issue.",
+          userId: "user_2HNYYYYYYYYYYYY",
         },
       ],
     },
@@ -562,6 +575,33 @@ async function main() {
       likes: {
         create: [{ userId: "user_2HNYXXXXXXXXXXX" }],
       },
+
+      reviews: {
+        create: [
+          {
+            reviewTitle: "Authentic and Well-Crafted",
+            rating: 5,
+            reviewDetails:
+              "This fugu smock is a true work of art. The embroidery is intricate and the fabric is of high quality. It's comfortable to wear and perfect for cultural events. Highly recommended!",
+            userId: "user_2HNYXXXXXXXXXXX",
+            images: {
+              create: [
+                {
+                  link: "/assets/mens-fugu-smock.png",
+                  slug: "mens-fugu-smock",
+                },
+              ],
+            },
+          },
+          {
+            reviewTitle: "Great Traditional Wear",
+            rating: 4,
+            reviewDetails:
+              "The smock is well-made and the traditional patterns are beautiful. It's a bit heavy for hot weather, but perfect for cooler days. The craftsmanship is excellent.",
+            userId: "user_2HNZZZZZZZZZZZZ",
+          },
+        ],
+      },
     },
   });
 
@@ -677,6 +717,32 @@ async function main() {
       discounts: {
         connect: [{ id: summerDiscount.id }],
       },
+      reviews: {
+        create: [
+          {
+            reviewTitle: "Stunning Ankara Jumpsuit",
+            rating: 5,
+            reviewDetails:
+              "This jumpsuit is absolutely gorgeous! The ankara print is vibrant and the fit is perfect. I wore it to a wedding and received so many compliments. The quality is excellent and it's very comfortable to wear.",
+            userId: "user_2HNYYYYYYYYYYYY",
+            images: {
+              create: [
+                {
+                  link: "/assets/ankara-jumpsuit.png",
+                  slug: "ankara-jumpsuit",
+                },
+              ],
+            },
+          },
+          {
+            reviewTitle: "Beautiful and Unique",
+            rating: 5,
+            reviewDetails:
+              "The jumpsuit is well-made with attention to detail. The ankara pattern is unique and eye-catching. It's comfortable and the quality is outstanding. Definitely worth the price!",
+            userId: "user_2HNZZZZZZZZZZZZ",
+          },
+        ],
+      },
     },
   });
 
@@ -751,6 +817,32 @@ async function main() {
       },
       discounts: {
         connect: [{ id: summerDiscount.id }],
+      },
+      reviews: {
+        create: [
+          {
+            reviewTitle: "Elegant and Traditional",
+            rating: 5,
+            reviewDetails:
+              "This kente dress is absolutely beautiful! The traditional patterns are authentic and the craftsmanship is excellent. It's perfect for formal occasions and the fit is amazing.",
+            userId: "user_2HNYYYYYYYYYYYY",
+            images: {
+              create: [
+                {
+                  link: "/assets/kente-dress.png",
+                  slug: "kente-dress",
+                },
+              ],
+            },
+          },
+          {
+            reviewTitle: "High Quality Kente Dress",
+            rating: 4,
+            reviewDetails:
+              "The dress is well-made with authentic kente fabric. The patterns are beautiful and the fit is good. The only reason for 4 stars is that it runs slightly large, but that's easily fixed with alterations.",
+            userId: "user_2HNYXXXXXXXXXXX",
+          },
+        ],
       },
     },
   });
@@ -830,6 +922,32 @@ async function main() {
       },
       discounts: {
         connect: [{ id: summerDiscount.id }],
+      },
+      reviews: {
+        create: [
+          {
+            reviewTitle: "Beautiful Embroidered Dashiki",
+            rating: 5,
+            reviewDetails:
+              "The embroidery on this dashiki is absolutely stunning! The quality of the fabric and stitching is excellent. It's comfortable to wear and perfect for special occasions.",
+            userId: "user_2HNZZZZZZZZZZZZ",
+            images: {
+              create: [
+                {
+                  link: "/assets/mens-embroidered-dashiki.png",
+                  slug: "mens-embroidered-dashiki",
+                },
+              ],
+            },
+          },
+          {
+            reviewTitle: "Great Traditional Shirt",
+            rating: 4,
+            reviewDetails:
+              "The dashiki is well-made with beautiful embroidery. The fabric is comfortable and the fit is good. The patterns are traditional and eye-catching. Very satisfied with my purchase.",
+            userId: "user_2HNYXXXXXXXXXXX",
+          },
+        ],
       },
     },
   });
@@ -935,6 +1053,32 @@ async function main() {
       discounts: {
         connect: [{ id: summerDiscount.id }],
       },
+      reviews: {
+        create: [
+          {
+            reviewTitle: "Stunning Ankara Corset",
+            rating: 5,
+            reviewDetails:
+              "This corset top is absolutely beautiful! The ankara print is vibrant and the fit is perfect. The quality is excellent and it's very comfortable to wear. I've received many compliments while wearing it.",
+            userId: "user_2HNYYYYYYYYYYYY",
+            images: {
+              create: [
+                {
+                  link: "/assets/womens-corset-top.png",
+                  slug: "womens-corset-top",
+                },
+              ],
+            },
+          },
+          {
+            reviewTitle: "Beautiful and Well-Made",
+            rating: 5,
+            reviewDetails:
+              "The corset is well-made with attention to detail. The ankara pattern is unique and eye-catching. It's comfortable and the quality is outstanding. Definitely worth the price!",
+            userId: "user_2HNZZZZZZZZZZZZ",
+          },
+        ],
+      },
     },
   });
 
@@ -1007,6 +1151,32 @@ async function main() {
       },
       discounts: {
         connect: [{ id: summerDiscount.id }],
+      },
+      reviews: {
+        create: [
+          {
+            reviewTitle: "Excellent Quality Suit",
+            rating: 5,
+            reviewDetails:
+              "This ankara suit is absolutely stunning! The quality of the fabric and tailoring is excellent. The traditional patterns are vibrant and well-made. Perfect for formal occasions.",
+            userId: "user_2HNYXXXXXXXXXXX",
+            images: {
+              create: [
+                {
+                  link: "/assets/mens-ankara-suit.png",
+                  slug: "mens-ankara-suit",
+                },
+              ],
+            },
+          },
+          {
+            reviewTitle: "Beautiful Traditional Suit",
+            rating: 4,
+            reviewDetails:
+              "The suit is well-made with beautiful ankara patterns. The fit is good and the quality is excellent. The only reason for 4 stars is that it runs slightly large, but that's easily fixed with alterations.",
+            userId: "user_2HNZZZZZZZZZZZZ",
+          },
+        ],
       },
     },
   });
@@ -1082,6 +1252,32 @@ async function main() {
       discounts: {
         connect: [{ id: summerDiscount.id }],
       },
+      reviews: {
+        create: [
+          {
+            reviewTitle: "Elegant Kente Dress",
+            rating: 5,
+            reviewDetails:
+              "This straight dress is absolutely beautiful! The kente accents are authentic and the craftsmanship is excellent. It's perfect for formal occasions and the fit is amazing.",
+            userId: "user_2HNYYYYYYYYYYYY",
+            images: {
+              create: [
+                {
+                  link: "/assets/kente-straight-dress.jpg",
+                  slug: "kente-straight-dress",
+                },
+              ],
+            },
+          },
+          {
+            reviewTitle: "High Quality Dress",
+            rating: 4,
+            reviewDetails:
+              "The dress is well-made with beautiful kente detailing. The fit is good and the quality is excellent. The only reason for 4 stars is that it runs slightly large, but that's easily fixed with alterations.",
+            userId: "user_2HNYXXXXXXXXXXX",
+          },
+        ],
+      },
     },
   });
 
@@ -1156,6 +1352,32 @@ async function main() {
       discounts: {
         connect: [{ id: summerDiscount.id }],
       },
+      reviews: {
+        create: [
+          {
+            reviewTitle: "Luxurious Kaftan Set",
+            rating: 5,
+            reviewDetails:
+              "This kaftan set is absolutely stunning! The gold embroidery is intricate and beautiful. The quality of the fabric is excellent and the fit is perfect. Perfect for special occasions.",
+            userId: "user_2HNZZZZZZZZZZZZ",
+            images: {
+              create: [
+                {
+                  link: "/assets/mens-kaftan.png",
+                  slug: "mens-kaftan",
+                },
+              ],
+            },
+          },
+          {
+            reviewTitle: "Beautiful Traditional Set",
+            rating: 4,
+            reviewDetails:
+              "The kaftan set is well-made with beautiful embroidery. The fit is good and the quality is excellent. The only reason for 4 stars is that it runs slightly large, but that's easily fixed with alterations.",
+            userId: "user_2HNYXXXXXXXXXXX",
+          },
+        ],
+      },
     },
   });
 
@@ -1229,6 +1451,32 @@ async function main() {
       },
       discounts: {
         connect: [{ id: summerDiscount.id }],
+      },
+      reviews: {
+        create: [
+          {
+            reviewTitle: "Stylish Peplum Blouse",
+            rating: 5,
+            reviewDetails:
+              "This ankara peplum blouse is absolutely beautiful! The patterns are vibrant and the fit is perfect. The quality is excellent and it's very comfortable to wear. I've received many compliments while wearing it.",
+            userId: "user_2HNYYYYYYYYYYYY",
+            images: {
+              create: [
+                {
+                  link: "/assets/peplum-blouse.png",
+                  slug: "peplum-blouse",
+                },
+              ],
+            },
+          },
+          {
+            reviewTitle: "Beautiful and Well-Made",
+            rating: 5,
+            reviewDetails:
+              "The blouse is well-made with attention to detail. The ankara pattern is unique and eye-catching. It's comfortable and the quality is outstanding. Definitely worth the price!",
+            userId: "user_2HNZZZZZZZZZZZZ",
+          },
+        ],
       },
     },
   });

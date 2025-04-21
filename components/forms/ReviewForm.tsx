@@ -44,8 +44,6 @@ const ReviewForm = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      fullName: "",
-      email: "",
       reviewTitle: "",
       rating: 0,
       reviewDetails: "",
@@ -63,42 +61,6 @@ const ReviewForm = () => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-8 w-full lg:w-[80%] "
       >
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <FormField
-            control={form.control}
-            name="fullName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full Name *</FormLabel>
-                <FormControl>
-                  <Input
-                    placeholder="Ex. Kobe Grey"
-                    {...field}
-                    className="border outline-gray-300 focus-visible:border-primary-300 text-lg lg:text-xl h-12"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email *</FormLabel>
-                <FormControl>
-                  <Input
-                    className="border outline-gray-300 focus-visible:border-primary-300 text-lg lg:text-xl h-12"
-                    placeholder="example@gmail.com"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
         <FormField
           control={form.control}
           name="rating"

@@ -178,13 +178,15 @@ model ProductReviewImage {
 }
 
 model ProductReview {
-  id        Int      @id @default(autoincrement())
-  title     String?
-  rating    Int
-  comment   String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  images    ProductReviewImage[]
+  id              Int      @id @default(autoincrement())
+  reviewTitle     String
+  rating          Int
+  reviewDetails   String
+  images          ProductReviewImage[]
+  
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  
 
   //relations
   userId    String
@@ -193,6 +195,7 @@ model ProductReview {
   product   Products @relation(fields: [productId], references: [id])
 
   @@index([rating])
+  @@unique([userId, productId])
 }
 
 model ProductLike {
