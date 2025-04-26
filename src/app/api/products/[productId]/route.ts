@@ -13,6 +13,7 @@ export async function GET(
         id: parseInt(productId),
       },
       select: {
+        id: true,
         name: true,
         link: true,
         slug: true,

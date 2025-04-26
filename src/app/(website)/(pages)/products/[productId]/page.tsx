@@ -190,11 +190,7 @@ const ProductPage = ({
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 py-8">
           {/* Image Column */}
-          {/* <div>
-            <div className="bg-gray-200 h-96 rounded-lg flex items-center justify-center">
-              <span>Product Image</span>
-            </div>
-          </div> */}
+
           <ProductMedia media={product.images} />
 
           {/* Details Column */}

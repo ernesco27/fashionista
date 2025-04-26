@@ -1,24 +1,25 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-import { routeAccessMap } from "./lib/settings";
 import { NextResponse } from "next/server";
-
-const matchers = Object.keys(routeAccessMap).map((route) => ({
-  matcher: createRouteMatcher([route]),
-  allowedRoles: routeAccessMap[route],
-}));
+import { routeAccessMap } from "./lib/settings";
 
 export default clerkMiddleware(async (auth, req) => {
-  const authObject = await auth();
+  const url = new URL(req.url);
+  const pathname = url.pathname;
 
-  const { sessionClaims } = authObject;
+  // Check if the route exists in the routeAccessMap
+  if (routeAccessMap[pathname]) {
+    const userRole = (await auth()).sessionClaims?.metadata?.role || "guest";
 
-  const role = (sessionClaims?.metadata as { role?: string })?.role;
+    console.log("User role:", userRole);
 
-  for (const { matcher, allowedRoles } of matchers) {
-    if (matcher(req) && !allowedRoles.includes(role!)) {
-      return NextResponse.redirect(new URL(`/${role}`, req.url));
+    // Check if the user's role is allowed to access the route
+    if (!routeAccessMap[pathname].includes(userRole)) {
+      const redirectUrl = new URL("/sign-in", req.url);
+      return NextResponse.redirect(redirectUrl);
     }
   }
+
+  return NextResponse.next();
 });
 
 export const config = {
@@ -29,27 +30,3 @@ export const config = {
     "/(api|trpc)(.*)",
   ],
 };
-
-// import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
-
-// //const isPublicRoute = createRouteMatcher(["/sign-in(.*)", "/sign-up(.*)"]);
-
-// const isProtectedRoute = createRouteMatcher(["/account(.*)"]);
-
-// export default clerkMiddleware(async (auth, request) => {
-//   if (isProtectedRoute(request)) {
-//     await auth.protect({
-//       unauthenticatedUrl: process.env.NEXT_PUBLIC_SERVER_URL,
-//       unauthorizedUrl: process.env.NEXT_PUBLIC_SERVER_URL,
-//     });
-//   }
-// });
-
-// export const config = {
-//   matcher: [
-//     // Skip Next.js internals and all static files, unless found in search params
-//     "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
-//     // Always run for API routes
-//     "/(api|trpc)(.*)",
-//   ],
-// };

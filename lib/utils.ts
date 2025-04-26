@@ -2,7 +2,6 @@ import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { Prisma, ProductReview, ProductVariant } from "@prisma/client";
 import { Product } from "@/types";
-import { auth } from "@clerk/nextjs/server";
 
 interface ProductItemType {
   quantity: number;
@@ -218,13 +217,3 @@ export const findSelectedItemDetails = (
 
   return null; // No item found for the exact combination
 };
-
-// export async function getSessionData() {
-//   const authData = await auth();
-//   const { sessionClaims, userId } = authData;
-
-//   const role = (sessionClaims?.metadata as { role?: string })?.role;
-//   const currentUserId = userId;
-
-//   return { currentUserId, role }; // Return an object with userId and role
-// }

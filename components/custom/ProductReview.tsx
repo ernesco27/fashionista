@@ -18,6 +18,8 @@ import Image from "next/image";
 import Zoom from "react-medium-image-zoom";
 import ReviewForm from "../forms/ReviewForm";
 import { cn } from "@/lib/utils";
+import { useAuth, useUser } from "@clerk/nextjs";
+import Link from "next/link";
 
 interface Review {
   rating: number;
@@ -39,6 +41,7 @@ interface Review {
 }
 
 const ProductReview = ({ product }: { product: Product }) => {
+  const { isSignedIn } = useUser();
   const [perPage, setPerPage] = useState<number>(10);
   const [filter, setFilter] = useState<string>("latest");
   const [page, setPage] = useState<number>(1);
@@ -47,6 +50,8 @@ const ProductReview = ({ product }: { product: Product }) => {
   const _DATA = usePagination(product?.reviews || [], perPage);
   const maxPage = _DATA.maxPage;
   const currentData = _DATA.currentData();
+
+  console.log("product", product);
 
   return (
     <>
@@ -269,7 +274,22 @@ const ProductReview = ({ product }: { product: Product }) => {
         <p className="text-sm lg:text-lg text-gray-500">
           Your email address will not be published. Required fields are marked *
         </p>
-        <ReviewForm />
+        {isSignedIn ? (
+          <ReviewForm productId={product.id} />
+        ) : (
+          <div className=" p-6 bg-gray-50 rounded-lg">
+            <p className="text-lg mb-4">
+              Please{" "}
+              <Link
+                href="/sign-in"
+                className="text-primary-700 hover:underline"
+              >
+                sign in
+              </Link>{" "}
+              to leave a review.
+            </p>
+          </div>
+        )}
       </div>
     </>
   );
