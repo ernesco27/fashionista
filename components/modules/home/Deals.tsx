@@ -15,6 +15,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 import "swiper/css/pagination";
 import ProductCardTwo from "@/components/custom/ProductCardTwo";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Deals = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -44,7 +45,7 @@ const Deals = () => {
       transition={{
         duration: 0.3,
       }}
-      className="py-10 w-full"
+      className="py-10 "
     >
       <Container>
         <Row className="mb-10">
@@ -54,6 +55,11 @@ const Deals = () => {
         <h3 className="py-2 font-normal text-lg lg:text-2xl">
           Deals of the Day
         </h3>
+        {isLoading && (
+          <div className=" ">
+            <Skeleton className="w-full h-[350px]" />
+          </div>
+        )}
         <Swiper
           breakpoints={{
             360: {

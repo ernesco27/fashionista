@@ -13,15 +13,18 @@ import ProductCard from "@/components/custom/ProductCard";
 import Row from "@/components/custom/Row";
 import Heading from "@/components/custom/Heading";
 import { m } from "framer-motion";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const FeaturedProducts = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-  const { data: products, error } = useSWR<Product[]>("/api/products", fetcher);
+  const {
+    data: products,
+    error,
+    isLoading,
+  } = useSWR<Product[]>("/api/products", fetcher);
 
   if (error) return <div>error fetching featured products</div>;
-
-  console.log("products:", products);
 
   return (
     <m.section
@@ -36,13 +39,17 @@ const FeaturedProducts = () => {
       transition={{
         duration: 0.3,
       }}
-      className="py-10 w-full"
+      className="py-10 "
     >
-      {/* {isLoading && <Loading isLoading />} */}
       <Container>
         <Row className="mb-10">
           <Heading name="Featured Products" />
         </Row>
+        {isLoading && (
+          <div className=" ">
+            <Skeleton className="w-full h-[350px]" />
+          </div>
+        )}
         <Swiper
           breakpoints={{
             360: {

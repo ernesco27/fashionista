@@ -3,13 +3,12 @@
 import React from "react";
 import { m } from "framer-motion";
 import Container from "@/components/custom/Container";
-import { Button } from "@/components/ui/Button";
-import { ArrowBigRightDashIcon } from "lucide-react";
+
 import CustomButton from "@/components/custom/CustomButton";
 
 const CollectionCta = () => {
   return (
-    <section className="py-10 w-full">
+    <section className="py-10  overflow-hidden">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 w-full">
           <m.div

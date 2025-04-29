@@ -8,8 +8,8 @@ const ProductsContent = ({ products }: { products: Product[] }) => {
   if (products?.length === 0) {
     return (
       <div className="flex flex-col justify-center items-center py-20 px-20 w-full">
-        <ShoppingBasket className="font-bold" size="100" />
-        <h3>No Product Found</h3>
+        <ShoppingBasket className="font-bold" size="50" />
+        <h3 className="text-xl">No Product Found</h3>
       </div>
     );
   }

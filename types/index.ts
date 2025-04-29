@@ -109,7 +109,9 @@ export type Product = {
   sku: string | null;
   status: string;
   subcategoryId: number;
+  subcategory: SubCategory;
   categoryId: number;
+  category: Category;
   brandId: number;
   brand: Brand;
   isAvailable: boolean;

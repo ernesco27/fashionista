@@ -12,11 +12,15 @@ import { m } from "framer-motion";
 import { useRouter } from "next/navigation";
 import Row from "@/components/custom/Row";
 import Heading from "@/components/custom/Heading";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Categories = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-  const { data: slideImages } = useSWR<Slides[]>("/api/slides", fetcher);
+  const { data: slideImages, isLoading } = useSWR<Slides[]>(
+    "/api/slides",
+    fetcher,
+  );
 
   const animation = {
     hide: { scale: 0, opacity: 0 },
@@ -30,11 +34,16 @@ const Categories = () => {
   };
 
   return (
-    <section className="py-10 w-full">
+    <section className="py-10">
       <Container>
         <Row className="mb-10">
           <Heading name="shop by category" />
         </Row>
+        {isLoading && (
+          <div className=" ">
+            <Skeleton className="w-full h-[450px]" />
+          </div>
+        )}
         <Swiper
           breakpoints={{
             360: {
@@ -58,8 +67,6 @@ const Categories = () => {
               spaceBetween: 40,
             },
           }}
-          //spaceBetween={50}
-          //slidesPerView={5}
           navigation={false}
           pagination={true}
           modules={[Autoplay, Navigation, Pagination]}

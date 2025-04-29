@@ -67,7 +67,7 @@ export async function createReview(formData: ReviewPayload) {
       });
     }
 
-    // revalidatePath(`/products/${formData.productId}`);
+    revalidatePath(`/products/${formData.productId}`);
     return { success: true, error: false };
   } catch (err) {
     console.error("Error creating review:", err);

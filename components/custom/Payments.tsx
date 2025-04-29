@@ -19,7 +19,7 @@ import {
 
 const Payments = () => {
   return (
-    <section className="py-10 w-full">
+    <section className="py-10">
       <Container>
         <Swiper
           breakpoints={{

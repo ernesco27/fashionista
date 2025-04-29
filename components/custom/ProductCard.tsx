@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { Product } from "@/types";
 import Image from "next/image";
 import { Button } from "../ui/Button";
-import { Eye, HeartIcon, Share2, ShoppingCart } from "lucide-react";
+import { Eye, HeartIcon, Share2, ShoppingCart, Star } from "lucide-react";
 import CurrencyFormat from "./CurrencyFormat";
 import { m } from "framer-motion";
 import {
@@ -12,13 +12,28 @@ import {
   CardFooter,
   CardHeader,
 } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+
 import Tooltip from "@mui/material/Tooltip";
 
 const ProductCard = ({ item }: { item: Product }) => {
   const router = useRouter();
 
+  const discount =
+    ((Number(item?.price) - Number(item?.salesPrice)) / Number(item?.price)) *
+    100;
+
   return (
-    <Card className="w-[400px] mb-8">
+    <Card className="w-[400px] mb-8 relative">
+      {item.salesPrice !== null && (
+        <Badge
+          variant="default"
+          className="absolute top-4 left-2 z-10 text-lg bg-white text-green-600 font-semibold"
+        >
+          {discount.toFixed(0)}% off
+        </Badge>
+      )}
+
       <CardHeader className="group/image relative h-[350px] overflow-hidden p-0">
         <Image
           src={item.images[1].link}
@@ -88,29 +103,43 @@ const ProductCard = ({ item }: { item: Product }) => {
         </m.div>
       </CardHeader>
       <CardContent>
+        <div className="flex justify-between items-center mt-2">
+          <p className="text-lg font-normal text-gray-400">
+            {item.subcategory.name}
+          </p>
+          <span className="text-primary-400 flex items-center gap-1">
+            <Star className="w-5 h-5 fill-primary-400" />
+            <p className="text-lg font-semibold text-black">
+              {item.reviews && item.reviews.length > 0
+                ? item.reviews.reduce((sum, review) => sum + review.rating, 0) /
+                  item.reviews.length
+                : 0}
+            </p>
+          </span>
+        </div>
         <h5
-          className="capitalize cursor-pointer"
+          className="capitalize cursor-pointer text-xl lg:text-xl mt-2"
           onClick={() => router.push(`/products/${item.id}`)}
         >
-          {item.name.substring(0, 20)}...{" "}
+          {item.name}
         </h5>
 
         <div className="inline-flex justify-center gap-4 items-center">
           {item.salesPrice !== null ? (
-            <div className="flex flex-wrap gap-20">
+            <div className="flex flex-wrap  gap-20">
               <CurrencyFormat
                 value={Number(item.salesPrice)}
-                className="font-bold text-primary-600 text-left w-20 text-2xl "
+                className="font-bold text-primary-600 text-left w-20 text-lg lg:text-xl "
               />
               <CurrencyFormat
                 value={Number(item.price)}
-                className="line-through text-lg   text-slate-600 "
+                className="line-through text-lg lg:text-xl text-slate-600 "
               />
             </div>
           ) : (
             <CurrencyFormat
               value={Number(item.price)}
-              className="font-bold text-primary-600 text-left w-20 text-2xl "
+              className="font-bold text-primary-600 text-left w-20 text-lg lg:text-xl "
             />
           )}
         </div>
@@ -119,7 +148,7 @@ const ProductCard = ({ item }: { item: Product }) => {
         <Button
           variant="outline"
           size="lg"
-          className="w-full text-lg bg-primary-200"
+          className="w-full text-lg bg-slate-100 hover:bg-primary-100"
         >
           Add To Cart
           <ShoppingCart />

@@ -43,14 +43,14 @@ const ProductsTopBar = ({
   products: Product[];
 }) => {
   return (
-    <div className="lg:flex items-center justify-between w-full">
-      <div className="flex items-center gap-4 flex-1 justify-between w-full">
+    <div className="lg:flex items-center justify-between w-full ">
+      <div className="flex items-center gap-4 flex-1 justify-between w-full ">
         <MobileSideBarLeft />
         <div className="hidden lg:block">
           Showing {maxPage === page ? products.length : perPage * page} of{" "}
           {products.length} results
         </div>
-        <div className="ms-auto">
+        <div className="ms-auto ">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline">{filter}</Button>

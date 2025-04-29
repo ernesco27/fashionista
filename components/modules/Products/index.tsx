@@ -14,7 +14,7 @@ const index = () => {
   return (
     <section className="my-10">
       <Container>
-        <Row className="gap-12 items-start">
+        <Row className="gap-12 items-start ">
           {/* sidebar */}
           <ProductsSidebarLeft
             minPrice={minPrice}

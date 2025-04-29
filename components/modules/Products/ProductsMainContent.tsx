@@ -67,8 +67,8 @@ function ProductsMainContent({
   return (
     <>
       {loading && <Loading isLoading={loading} />}
-      <div className={cn("", className)}>
-        <div className="flex flex-col gap-4">
+      <div className={cn("w-full", className)}>
+        <div className="flex flex-col gap-4 ">
           <ProductsTopBar
             minPrice={minPrice}
             maxPrice={maxPrice}

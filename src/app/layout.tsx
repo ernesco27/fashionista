@@ -24,7 +24,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={cn("min-h-screen overflow-x-hidden", jost.className)}>
+      <body
+        className={cn(
+          "min-h-screen  w-full max-w-full overflow-x-hidden pb-16 lg:pb-0",
+          jost.className,
+        )}
+      >
         <Providers>{children}</Providers>
       </body>
     </html>

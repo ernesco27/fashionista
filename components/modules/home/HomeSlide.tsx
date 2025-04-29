@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import "./style.css";
 import { m } from "framer-motion";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const HomeSlide = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
@@ -34,10 +35,16 @@ const HomeSlide = () => {
     isLoading,
   } = useSWR<Slides[]>("/api/slides", fetcher);
 
-  console.log("slide:", slideImages);
+  if (isLoading)
+    return (
+      <div className=" w-full overflow-hidden">
+        <Skeleton className="w-full h-[700px]" />
+      </div>
+    );
+
   return (
-    <section>
-      <Container>
+    <section className=" w-full overflow-hidden">
+      <Container className="w-full max-w-full px-0">
         <Swiper
           autoplay={{
             delay: 6000,
@@ -48,17 +55,17 @@ const HomeSlide = () => {
           navigation={true}
           pagination={true}
           modules={[Autoplay, Navigation, Pagination]}
+          className="w-full"
         >
           {slideImages
             ?.filter((item: Slides) => item.slug === "banner-home")
             .map((item: Slides) => (
               <SwiperSlide
                 key={item.id}
-                className="relative [&>button]:block hover:animate-heart-beating"
+                className="relative [&>button]:block hover:animate-heart-beating w-full"
                 style={{
                   backgroundImage: `url(${item.image})`,
                   height: "700px",
-                  width: "100%",
                   backgroundSize: "cover",
                   backgroundPosition: "top",
                 }}

@@ -18,7 +18,7 @@ import { Textarea } from "../ui/textarea";
 import { Button } from "../ui/Button";
 import { CldUploadWidget } from "next-cloudinary";
 import { UploadIcon } from "lucide-react";
-import { createReview, updateReview } from "../../actions/action";
+import { createReview, updateReview } from "../../actions/reviewAction";
 import { useUser } from "@clerk/nextjs";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
