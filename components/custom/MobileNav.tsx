@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -9,9 +9,14 @@ import { BiCategory } from "react-icons/bi";
 import Container from "./Container";
 import { m } from "framer-motion";
 import Row from "./Row";
+import CartPreview from "../modules/header/CartPreview";
 
 const MobileNav = () => {
   const pathname = usePathname();
+
+  const [cartOpen, setCartOpen] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
+  const [cartItemsCount, setCartItemsCount] = useState(1);
 
   const navItems = [
     {
@@ -27,7 +32,8 @@ const MobileNav = () => {
     {
       name: "Cart",
       icon: CiShoppingCart,
-      href: "/cart",
+      //href: "/cart",
+      onClick: () => setCartOpen(true),
     },
     {
       name: "Wishlist",
@@ -56,10 +62,10 @@ const MobileNav = () => {
                 whileTap={{ scale: 0.95 }}
                 className="w-1/4 flex justify-center"
               >
-                <Link
-                  href={item.href}
+                <div
+                  onClick={item.onClick}
                   className={cn(
-                    "flex flex-col items-center justify-center w-full h-full",
+                    "flex flex-col items-center justify-center w-full h-full relative",
                     "text-gray-600 hover:text-primary-700 transition-colors",
                     isActive && "text-primary-700",
                   )}
@@ -71,6 +77,11 @@ const MobileNav = () => {
                     transition={{ type: "spring", stiffness: 500 }}
                   >
                     <Icon size={24} />
+                    {item.name === "Cart" && cartItemsCount > 0 && (
+                      <span className="absolute -top-1 right-6 bg-primary-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
+                        {cartItemsCount}
+                      </span>
+                    )}
                   </m.div>
                   <m.span
                     className="text-xs mt-1"
@@ -80,11 +91,17 @@ const MobileNav = () => {
                   >
                     {item.name}
                   </m.span>
-                </Link>
+                </div>
               </m.div>
             );
           })}
         </div>
+        <CartPreview
+          cartOpen={cartOpen}
+          setCartOpen={setCartOpen}
+          side="bottom"
+          cartItemsCount={cartItemsCount}
+        />
       </Container>
     </nav>
   );

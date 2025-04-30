@@ -5,12 +5,16 @@ import { CiSearch, CiShoppingCart, CiUser } from "react-icons/ci";
 import SearchBar from "../modules/header/SearchBar";
 import CartMin from "../modules/header/CartMin";
 import { useRouter } from "next/navigation";
+import CartPreview from "../modules/header/CartPreview";
 
 const IconsGroup = ({
   openSearchBar,
   setOpenSearchBar,
   cartOpen,
   setCartOpen,
+  userOpen,
+  setUserOpen,
+  cartItemsCount = 0,
 }: {
   openSearchBar: boolean;
   setOpenSearchBar: (open: boolean) => void;
@@ -18,6 +22,7 @@ const IconsGroup = ({
   setCartOpen: (open: boolean) => void;
   userOpen: boolean;
   setUserOpen: (open: boolean) => void;
+  cartItemsCount?: number;
 }) => {
   const router = useRouter();
   return (
@@ -39,7 +44,7 @@ const IconsGroup = ({
         >
           <CiShoppingCart size={40} className="hover:text-primary-700" />
           <span className="absolute -top-1 -right-1 bg-primary-500 text-white text-sm w-6 h-6 rounded-full flex items-center justify-center">
-            0
+            {cartItemsCount}
           </span>
         </div>
         <div
@@ -51,7 +56,13 @@ const IconsGroup = ({
             className="hover:text-primary-700 hidden lg:block"
           />
         </div>
-        <CartMin cartOpen={cartOpen} setCartOpen={setCartOpen} />
+        {/* <CartMin cartOpen={cartOpen} setCartOpen={setCartOpen} /> */}
+        <CartPreview
+          cartOpen={cartOpen}
+          setCartOpen={setCartOpen}
+          side="right"
+          cartItemsCount={cartItemsCount}
+        />
       </Row>
     </section>
   );

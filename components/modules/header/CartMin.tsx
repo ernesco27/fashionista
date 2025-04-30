@@ -1,3 +1,5 @@
+"use client";
+
 import React from "react";
 import { AnimatePresence, m } from "framer-motion";
 import Image from "next/image";
@@ -6,6 +8,7 @@ import { Trash } from "lucide-react";
 import CurrencyFormat from "@/components/custom/CurrencyFormat";
 import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+
 const CartMin = ({
   cartOpen,
   setCartOpen,

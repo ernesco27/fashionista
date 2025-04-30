@@ -12,6 +12,7 @@ const Main = () => {
   const [searchBarOpen, setSearchBarOpen] = useState(false);
   const [cartOpen, setCartOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
+  const [cartItemsCount, setCartItemsCount] = useState(0);
 
   return (
     <section className="h-full">
@@ -27,6 +28,7 @@ const Main = () => {
             setCartOpen={setCartOpen}
             userOpen={userOpen}
             setUserOpen={setUserOpen}
+            cartItemsCount={cartItemsCount}
           />
         </Row>
       </Container>
