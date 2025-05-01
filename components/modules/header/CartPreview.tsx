@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { Trash } from "lucide-react";
 import CurrencyFormat from "@/components/custom/CurrencyFormat";
@@ -14,6 +14,7 @@ import {
   SheetTitle,
   SheetHeader,
 } from "@/components/ui/sheet";
+import { useCartStore } from "@/store/cartStore";
 
 const CartPreview = ({
   cartOpen,
@@ -26,65 +27,100 @@ const CartPreview = ({
   side?: "bottom" | "right";
   cartItemsCount?: number;
 }) => {
-  const handleRemoveItem = () => {
-    console.log("remove item");
+  const [isMounted, setIsMounted] = useState(false);
+  const { items, removeItem, getTotalPrice } = useCartStore();
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  const handleRemoveItem = (productId: number) => {
+    removeItem(productId);
   };
 
   const handleCheckout = () => {
     console.log("checkout");
   };
 
+  if (!isMounted) {
+    return null;
+  }
+
   return (
     <Sheet open={cartOpen} onOpenChange={setCartOpen}>
       <SheetContent side={side}>
-        <SheetHeader className="mb-6">
-          <SheetTitle className="text-2xl font-bold">Cart</SheetTitle>
+        <SheetHeader className="mb-6 ">
+          <SheetTitle className="text-xl font-bold">
+            Cart ({items.length})
+          </SheetTitle>
         </SheetHeader>
 
         <div className="flex flex-col h-full justify-between gap-8 py-8">
           <div className="flex flex-col snap-y gap-6 max-h-[360px] border-b border-gray-200 pb-4 overflow-y-auto">
-            {/* TODO: lIST items here */}
-            <div className="flex justify-between gap-4 snap-center cursor-grab">
-              <Image
-                src="/assets/ankara-jumpsuit-1.png"
-                alt="product"
-                width={200}
-                height={200}
-                className="h-20 w-20 object-cover"
-              />
-              <div className="flex flex-col flex-1 gap-1">
-                <span className="capitalize">name here</span>
-                <div className="inline-flex gap-4 font-bold">
-                  <span className="font-bold">2</span>
-                  <span>x</span>
-                  <span className="font-bold">GHs 100</span>
-                </div>
-                <div className="inline-flex gap-4">
-                  <div className="inline-flex justify-between items-center gap-1 ">
-                    <span>Size:</span>
-                    <span className="font-bold">L</span>
-                  </div>
-                  <div className="inline-flex gap-1">
-                    <span>Color:</span>
-                    <span className="font-bold">Red</span>
-                  </div>
-                </div>
-              </div>
+            {items.map((item) => (
               <div
-                className="flex items-start"
-                role="button"
-                onClick={() => handleRemoveItem()}
+                key={`${item.id}-${JSON.stringify(item.selectedVariants)}`}
+                className="flex justify-between gap-4 snap-center cursor-grab"
               >
-                <Trash className=" hover:text-primary-500" size={20} />
+                <Image
+                  src={item.selectedImage || item.images[0]?.link}
+                  alt={item.name}
+                  width={200}
+                  height={200}
+                  className="h-20 w-20 object-cover"
+                />
+                <div className="flex flex-col flex-1 gap-1">
+                  <span className="capitalize text-lg">{item.name}</span>
+                  <div className="inline-flex gap-4 font-bold">
+                    <span className="font-semibold text-lg">
+                      {item.quantity}
+                    </span>
+                    <span>x</span>
+                    <CurrencyFormat
+                      value={parseFloat(
+                        (item.salesPrice || item.price).toString(),
+                      )}
+                      className="font-semibold"
+                    />
+                  </div>
+                  {item.selectedVariants &&
+                    item.selectedVariants.length > 0 && (
+                      <div className="inline-flex gap-4">
+                        {item.selectedVariants.map((variant, index) => (
+                          <div key={index} className="inline-flex gap-1">
+                            <span className="text-sm">{variant.name}:</span>
+                            <span className="font-semibold text-sm">
+                              {variant.value}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                </div>
+                <div
+                  className="flex items-start"
+                  role="button"
+                  onClick={() => handleRemoveItem(item.id)}
+                >
+                  <Trash className="hover:text-primary-500" size={15} />
+                </div>
               </div>
-            </div>
+            ))}
+            {items.length === 0 && (
+              <div className="text-center py-4">
+                <p>Your cart is empty</p>
+              </div>
+            )}
           </div>
 
           <div className="flex flex-col gap-6">
             <div className="flex justify-between">
-              <div className="text-xl font-bold ">Subtotal</div>
+              <div className="text-xl font-bold">Subtotal</div>
               <strong>
-                <CurrencyFormat value={100} className="text-right" />
+                <CurrencyFormat
+                  value={getTotalPrice()}
+                  className="text-right"
+                />
               </strong>
             </div>
             <div className="flex flex-col gap-4">
@@ -98,6 +134,8 @@ const CartPreview = ({
                 variant="default"
                 size="lg"
                 className="rounded-sm py-8 capitalize text-base"
+                onClick={handleCheckout}
+                disabled={items.length === 0}
               >
                 Checkout
               </Button>

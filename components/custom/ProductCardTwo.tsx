@@ -3,7 +3,7 @@ import { useRouter } from "next/navigation";
 import { Product } from "@/types";
 import Image from "next/image";
 import { Button } from "../ui/Button";
-import { Eye, HeartIcon, Share2, ShoppingCart, Star } from "lucide-react";
+import { ArrowRight, Eye, HeartIcon, Share2, Star } from "lucide-react";
 import CurrencyFormat from "./CurrencyFormat";
 import { m } from "framer-motion";
 import {
@@ -58,7 +58,7 @@ const ProductCardTwo = ({ item }: { item: Product }) => {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => router.push(`/products${item.slug}`)}
+                onClick={() => router.push(`/products/${item.id}`)}
                 className="hover:bg-black hover:text-white"
               >
                 <Eye />
@@ -68,7 +68,7 @@ const ProductCardTwo = ({ item }: { item: Product }) => {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => router.push(`/products${item.slug}`)}
+                onClick={() => router.push(`/products/${item.id}`)}
                 className="hover:bg-black hover:text-white"
               >
                 <HeartIcon />
@@ -78,7 +78,7 @@ const ProductCardTwo = ({ item }: { item: Product }) => {
               <Button
                 variant="outline"
                 size="icon"
-                onClick={() => router.push(`/products${item.slug}`)}
+                onClick={() => router.push(`/products/${item.id}`)}
                 className="hover:bg-black hover:text-white"
               >
                 <Share2 />
@@ -97,17 +97,17 @@ const ProductCardTwo = ({ item }: { item: Product }) => {
             {item.salesPrice !== null ? (
               <div className="flex flex-wrap  justify-between w-full">
                 <CurrencyFormat
-                  value={item.salesPrice}
+                  value={parseFloat(item.salesPrice.toString())}
                   className="font-bold text-primary-600 text-left w-20 text-xl "
                 />
                 <CurrencyFormat
-                  value={item.price}
+                  value={parseFloat(item.price.toString())}
                   className="line-through text-lg   text-slate-600 "
                 />
               </div>
             ) : (
               <CurrencyFormat
-                value={item.price}
+                value={parseFloat(item.price.toString())}
                 className="font-bold text-primary-600 text-left w-20 text-2xl "
               />
             )}
@@ -123,91 +123,19 @@ const ProductCardTwo = ({ item }: { item: Product }) => {
             {item.description.substring(0, 40)}...
           </p>
         </CardContent>
-        <CardFooter>
-          <Button variant="outline" size="sm" className=" text-lg">
-            Add To Cart
-            <ShoppingCart />
+        <CardFooter className="flex gap-4">
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-lg"
+            onClick={() => router.push(`/products/${item.id}`)}
+          >
+            Shop Now
+            <ArrowRight />
           </Button>
         </CardFooter>
       </div>
     </Card>
-
-    // <div className="flex flex-col gap-2 items-center cursor-pointer border border-gray-200 rounded-md shadow-lg w-[350px]  ">
-    //   {/* images */}
-    //   <div
-    //     onClick={() => router.push(`/products/${item.slug}`)}
-    //     className="flex group/image h-[400px] relative overflow-hidden"
-    //   >
-    //     <Image
-    //       src={`/assets/${item.images[1].link}`}
-    //       alt={item.images[1].altText ?? item.name}
-    //       width="400"
-    //       height="400"
-    //       className=" duration-300 ease-linear group-hover/image:translate-x-full"
-    //     />
-    //     <Image
-    //       src={`/assets/${item.images[0].link}`}
-    //       alt={item.images[0].altText ?? item.name}
-    //       width="400"
-    //       height="400"
-    //       className="absolute duration-300 ease-linear -translate-x-full group-hover/image:translate-x-0"
-    //     />
-    //     <m.div
-    //       initial={{
-    //         opacity: 0,
-    //         x: 10,
-    //       }}
-    //       animate={{
-    //         opacity: 1,
-    //         x: 0,
-    //       }}
-    //       exit={{
-    //         opacity: 0,
-    //         x: 10,
-    //       }}
-    //       transition={{
-    //         duration: 0.3,
-    //         type: "spring",
-    //       }}
-    //       className="hidden absolute top-4 right-4 flex-col gap-4 group-hover/image:flex duration-300 ease-in"
-    //     >
-    //       <Button
-    //         variant="outline"
-    //         size="icon"
-    //         onClick={() => router.push(`/products${item.slug}`)}
-    //         className="hover:bg-black hover:text-white"
-    //       >
-    //         <Eye />
-    //       </Button>
-    //     </m.div>
-    //   </div>
-    //   {/* content */}
-    //   <div className="flex flex-col gap-2 items-start py-4  ">
-    //     <h5 className="capitalize">{item.name.substring(0, 20)}... </h5>
-    //     <p className="capitalize text-sm">
-    //       {item.description.substring(0, 30)}{" "}
-    //     </p>
-    //     <div className="inline-flex justify-center gap-4 items-center">
-    //       {item.salesPrice !== null ? (
-    //         <div className="flex flex-wrap gap-20">
-    //           <CurrencyFormat
-    //             value={item.salesPrice}
-    //             className="font-bold text-primary-900 text-left w-20 text-2xl "
-    //           />
-    //           <CurrencyFormat
-    //             value={item.price}
-    //             className="line-through text-lg   text-slate-600 "
-    //           />
-    //         </div>
-    //       ) : (
-    //         <CurrencyFormat
-    //           value={item.price}
-    //           className="font-bold text-primary-900 text-left w-20 text-3xl "
-    //         />
-    //       )}
-    //     </div>
-    //   </div>
-    // </div>
   );
 };
 

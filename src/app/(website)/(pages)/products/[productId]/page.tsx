@@ -22,6 +22,8 @@ import ProductMedia from "@/components/modules/Products/ProductMedia";
 import { Input } from "@/components/ui/input";
 import { NumberField } from "@base-ui-components/react/number-field";
 import NumberInput from "@/components/custom/NumberInput";
+import { useCartStore } from "@/store/cartStore";
+import { toast } from "react-toastify";
 interface ProductItemType {
   quantity: number;
   price: Prisma.Decimal;
@@ -57,15 +59,15 @@ const ProductPage = ({
 }) => {
   // All hooks at the top in consistent order
   const { productData } = useProduct();
-  const resolvedParams = React.use(params);
-  const { productId } = resolvedParams;
+  // const resolvedParams = React.use(params);
+  // const { productId } = resolvedParams;
   const [quantity, setQuantity] = useState<number>(1);
   const [selectedVariants, setSelectedVariants] = useState<
     Record<string, string>
   >({});
   const [isInitialized, setIsInitialized] = useState(false);
 
-  console.log("productData", productData);
+  const addItem = useCartStore((state) => state.addItem);
 
   // --- Data Processing (Handles Decimals and ProductItems) ---
   const product = useMemo(() => {
@@ -167,14 +169,48 @@ const ProductPage = ({
     }
   }, [product, isInitialized]);
 
+  const handleAddToCart = () => {
+    if (!product || !selectedItemDetails) return;
+
+    // Convert selectedVariants to the format expected by the cart store
+    const variantArray = Object.entries(selectedVariants).map(
+      ([name, value]) => ({
+        name,
+        value,
+      }),
+    );
+
+    // Create a product object with the selected variant's price
+    const productWithVariantPrice = {
+      ...product,
+      price: selectedItemDetails.price,
+      salesPrice: selectedItemDetails.price.lt(product.price)
+        ? selectedItemDetails.price
+        : null,
+    };
+
+    addItem(
+      productWithVariantPrice,
+      quantity,
+      variantArray,
+      product.images[0]?.link,
+    );
+
+    toast.success("Product added to cart", {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+    });
+  };
+
   // --- Render Logic ---
   if (!productData) {
-    return (
-      // <Container>
-      //   <p>Loading...</p>
-      // </Container>
-      <Loading />
-    );
+    return <Loading />;
   }
 
   if (!product) {
@@ -305,6 +341,7 @@ const ProductPage = ({
                   outlineColor="#eab308"
                   // Disable if no item matches selection OR if the matched item is out of stock
                   disabled={!selectedItemDetails || isSelectedVariantOutOfStock}
+                  handleAddToCart={handleAddToCart}
                 />
                 <CustomButton
                   size="default"

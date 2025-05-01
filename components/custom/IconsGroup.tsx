@@ -6,6 +6,7 @@ import SearchBar from "../modules/header/SearchBar";
 import CartMin from "../modules/header/CartMin";
 import { useRouter } from "next/navigation";
 import CartPreview from "../modules/header/CartPreview";
+import { useCartStore } from "@/store/cartStore";
 
 const IconsGroup = ({
   openSearchBar,
@@ -25,6 +26,9 @@ const IconsGroup = ({
   cartItemsCount?: number;
 }) => {
   const router = useRouter();
+
+  const { items } = useCartStore();
+
   return (
     <section>
       <Row className="lg:gap-4">
@@ -44,7 +48,7 @@ const IconsGroup = ({
         >
           <CiShoppingCart size={40} className="hover:text-primary-700" />
           <span className="absolute -top-1 -right-1 bg-primary-500 text-white text-sm w-6 h-6 rounded-full flex items-center justify-center">
-            {cartItemsCount}
+            {items.length}
           </span>
         </div>
         <div

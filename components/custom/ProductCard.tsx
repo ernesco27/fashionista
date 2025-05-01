@@ -3,7 +3,14 @@ import { useRouter } from "next/navigation";
 import { Product } from "@/types";
 import Image from "next/image";
 import { Button } from "../ui/Button";
-import { Eye, HeartIcon, Share2, ShoppingCart, Star } from "lucide-react";
+import {
+  ArrowRight,
+  Eye,
+  HeartIcon,
+  Share2,
+  ShoppingCart,
+  Star,
+} from "lucide-react";
 import CurrencyFormat from "./CurrencyFormat";
 import { m } from "framer-motion";
 import {
@@ -102,8 +109,8 @@ const ProductCard = ({ item }: { item: Product }) => {
           </div>
         </m.div>
       </CardHeader>
-      <CardContent>
-        <div className="flex justify-between items-center mt-2">
+      <CardContent className="flex flex-col items-start">
+        <div className="flex justify-between items-center mt-2 w-full">
           <p className="text-lg font-normal text-gray-400">
             {item.subcategory.name}
           </p>
@@ -121,7 +128,7 @@ const ProductCard = ({ item }: { item: Product }) => {
           className="capitalize cursor-pointer text-xl lg:text-xl mt-2"
           onClick={() => router.push(`/products/${item.id}`)}
         >
-          {item.name}
+          {item.name.substring(0, 28)}...
         </h5>
 
         <div className="inline-flex justify-center gap-4 items-center">
@@ -148,10 +155,11 @@ const ProductCard = ({ item }: { item: Product }) => {
         <Button
           variant="outline"
           size="lg"
-          className="w-full text-lg bg-slate-100 hover:bg-primary-100"
+          className="w-full text-lg  "
+          onClick={() => router.push(`/products/${item.id}`)}
         >
-          Add To Cart
-          <ShoppingCart />
+          Shop Now
+          <ArrowRight />
         </Button>
       </CardFooter>
     </Card>

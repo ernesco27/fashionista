@@ -10,19 +10,26 @@ import Container from "./Container";
 import { m } from "framer-motion";
 import Row from "./Row";
 import CartPreview from "../modules/header/CartPreview";
+import { useCartStore } from "@/store/cartStore";
+import { useRouter } from "next/navigation";
 
 const MobileNav = () => {
   const pathname = usePathname();
+
+  const router = useRouter();
 
   const [cartOpen, setCartOpen] = useState(false);
   const [userOpen, setUserOpen] = useState(false);
   const [cartItemsCount, setCartItemsCount] = useState(1);
 
+  const { items } = useCartStore();
+
   const navItems = [
     {
       name: "Home",
       icon: CiHome,
-      href: "/",
+
+      onClick: () => router.push("/"),
     },
     {
       name: "Categories",
@@ -32,7 +39,7 @@ const MobileNav = () => {
     {
       name: "Cart",
       icon: CiShoppingCart,
-      //href: "/cart",
+
       onClick: () => setCartOpen(true),
     },
     {
@@ -77,9 +84,9 @@ const MobileNav = () => {
                     transition={{ type: "spring", stiffness: 500 }}
                   >
                     <Icon size={24} />
-                    {item.name === "Cart" && cartItemsCount > 0 && (
+                    {item.name === "Cart" && items.length > 0 && (
                       <span className="absolute -top-1 right-6 bg-primary-500 text-white text-xs w-4 h-4 rounded-full flex items-center justify-center">
-                        {cartItemsCount}
+                        {items.length}
                       </span>
                     )}
                   </m.div>

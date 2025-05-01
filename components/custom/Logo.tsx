@@ -12,7 +12,7 @@ const Logo = () => {
         height={50}
         priority
       />
-      <p className="text-2xl font-semibold">Edimays Couture</p>
+      <p className="hidden lg:block text-2xl font-semibold">Edimays Couture</p>
     </Link>
   );
 };

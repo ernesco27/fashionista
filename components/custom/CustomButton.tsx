@@ -8,6 +8,7 @@ const CustomButton = ({
   outlineColor,
   disabled = false,
   size = "default",
+  handleAddToCart,
 }: {
   name: string;
   primaryColor: string;
@@ -15,6 +16,7 @@ const CustomButton = ({
   outlineColor: string;
   disabled?: boolean;
   size?: "sm" | "default" | "lg";
+  handleAddToCart?: () => void;
 }) => {
   const [isHovered, setIsHovered] = useState(false);
 
@@ -36,6 +38,7 @@ const CustomButton = ({
 
   return (
     <button
+      onClick={handleAddToCart}
       className={cn(
         "relative flex items-center gap-1 px-9 py-1 border-4 border-transparent font-semibold rounded-full overflow-hidden transition-all duration-1000 ease-[cubic-bezier(0.23,1,0.32,1)] group",
         sizeClasses[size],
