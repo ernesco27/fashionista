@@ -15,6 +15,9 @@ function ProductsMainContent({
   setMinPrice,
   setMaxPrice,
   setLoading,
+  products,
+  filter,
+  setFilter,
   className,
 }: {
   minPrice: number;
@@ -23,11 +26,12 @@ function ProductsMainContent({
   setMinPrice: (v: number) => void;
   setMaxPrice: (v: number) => void;
   setLoading: (v: boolean) => void;
+  products: Product[];
+  filter: string;
+  setFilter: (v: string) => void;
   className?: string;
 }) {
-  const [products, setProducts] = useState<Product[]>([]);
   const [perPage, setPerPage] = useState<number>(10);
-  const [filter, setFilter] = useState<string>("latest");
   const [page, setPage] = useState<number>(1);
 
   const count = Math.ceil(products?.length / perPage);
@@ -37,32 +41,6 @@ function ProductsMainContent({
     setPage(p);
     _DATA.jump(p);
   };
-
-  //API CALL
-
-  useEffect(() => {
-    const getProducts = async () => {
-      setLoading(true);
-      await axios
-        .get("/api/products", {
-          params: {
-            filter: filter,
-            minPrice: minPrice,
-            maxPrice: maxPrice,
-          },
-        })
-        .then((response) => {
-          setProducts(response.data);
-        })
-        .catch((error) => {
-          console.log(error);
-        })
-        .finally(() => {
-          setLoading(false);
-        });
-    };
-    getProducts();
-  }, [page, filter, minPrice, maxPrice]);
 
   return (
     <>

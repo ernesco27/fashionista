@@ -341,7 +341,7 @@ const ProductPage = ({
                   outlineColor="#eab308"
                   // Disable if no item matches selection OR if the matched item is out of stock
                   disabled={!selectedItemDetails || isSelectedVariantOutOfStock}
-                  handleAddToCart={handleAddToCart}
+                  handleClick={handleAddToCart}
                 />
                 <CustomButton
                   size="default"

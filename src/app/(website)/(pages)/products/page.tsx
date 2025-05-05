@@ -11,7 +11,7 @@ import Link from "next/link";
 import { Metadata } from "next";
 import Products from "@/components/modules/Products";
 import PageHeader from "@/components/custom/PageHeader";
-
+import ProductsContainer from "@/components/custom/ProductsContainer";
 const page = () => {
   return (
     <>
@@ -43,7 +43,8 @@ const page = () => {
           </Row>
         </Container>
       </section>
-      <Products />
+
+      <ProductsContainer />
     </>
   );
 };

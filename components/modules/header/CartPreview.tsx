@@ -72,7 +72,7 @@ const CartPreview = ({
                 <div className="flex flex-col flex-1 gap-1">
                   <span className="capitalize text-lg">{item.name}</span>
                   <div className="inline-flex gap-4 font-bold">
-                    <span className="font-semibold text-lg">
+                    <span className="font-semibold text-base">
                       {item.quantity}
                     </span>
                     <span>x</span>
@@ -80,7 +80,7 @@ const CartPreview = ({
                       value={parseFloat(
                         (item.salesPrice || item.price).toString(),
                       )}
-                      className="font-semibold"
+                      className="font-semibold text-base"
                     />
                   </div>
                   {item.selectedVariants &&

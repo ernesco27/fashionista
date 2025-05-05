@@ -28,29 +28,32 @@ const MobileNav = () => {
     {
       name: "Home",
       icon: CiHome,
-
+      href: "/",
       onClick: () => router.push("/"),
     },
     {
       name: "Categories",
       icon: BiCategory,
       href: "/categories",
+      onClick: () => router.push("/categories"),
     },
     {
       name: "Cart",
       icon: CiShoppingCart,
-
+      href: "/cart",
       onClick: () => setCartOpen(true),
     },
     {
       name: "Wishlist",
       icon: CiHeart,
       href: "/wishlist",
+      onClick: () => router.push("/wishlist"),
     },
     {
       name: "Account",
       icon: CiUser,
       href: "/account/dashboard",
+      onClick: () => router.push("/account/dashboard"),
     },
   ];
 
